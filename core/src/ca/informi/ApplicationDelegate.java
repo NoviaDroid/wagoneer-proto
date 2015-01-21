@@ -1,0 +1,85 @@
+package ca.informi;
+
+import java.util.Locale;
+
+import ca.informi.IntervalTimer.Interval;
+
+import com.badlogic.gdx.ApplicationListener;
+
+public abstract class ApplicationDelegate implements ApplicationListener {
+
+	protected ApplicationController controller;
+	protected Locale locale;
+
+	public void added() {
+	}
+
+	@Override
+	public void create() {
+	}
+
+	@Override
+	public void dispose() {
+	}
+
+	public boolean isReady() {
+		return true;
+	}
+
+	@Override
+	public void pause() {
+
+	}
+
+	public void preUpdate() {
+
+	}
+
+	public final void remove() {
+		controller.remove(this);
+		removeInternal();
+	}
+
+	public void removed() {
+	}
+
+	@Override
+	public void render() {
+	}
+
+	public boolean renderWhilePaused() {
+		return true;
+	}
+
+	@Override
+	public void resize(final int width, final int height) {
+	}
+
+	@Override
+	public void resume() {
+
+	}
+
+	public final void setController(final ApplicationController controller) {
+		this.controller = controller;
+	}
+
+	public void setLocale(final Locale currentLocale) {
+		this.locale = currentLocale;
+	}
+
+	public void suspend() {
+
+	}
+
+	public void update(final Interval interval) {
+	}
+
+	public boolean updateWhilePaused() {
+		return false;
+	}
+
+	protected void removeInternal() {
+	}
+
+}
