@@ -1,6 +1,6 @@
-package ca.informi;
+package ca.informi.service;
 
-import ca.informi.service.Service;
+import ca.informi.gdx.ApplicationDelegate;
 
 import com.badlogic.gdx.utils.TimeUtils;
 

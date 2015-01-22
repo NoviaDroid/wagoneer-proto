@@ -1,9 +1,9 @@
 package ca.informi.wagoneer.screen;
 
-import ca.informi.FontDraw;
-import ca.informi.IntervalTimer.Interval;
 import ca.informi.gdx.graphics.g2d.DFFont;
+import ca.informi.gdx.graphics.g2d.FontDraw;
 import ca.informi.service.ResourcePackage;
+import ca.informi.service.IntervalTimer.Interval;
 import ca.informi.service.ResourcePackage.Ready;
 
 import com.badlogic.gdx.Gdx;

@@ -1,8 +1,8 @@
-package ca.informi;
+package ca.informi.gdx.assets.loaders;
 
 import java.io.BufferedReader;
 
-import ca.informi.ShaderProgramLoader.ShaderProgramParameters;
+import ca.informi.gdx.assets.loaders.ShaderProgramLoader.ShaderProgramParameters;
 import ca.informi.gdx.graphics.g2d.DFFont;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -52,6 +52,8 @@ public class DFFontLoader extends AsynchronousAssetLoader<DFFont, DFFontLoader.D
 	BitmapFontData data;
 	private int baseSize;
 	private String shaderName;
+	private AssetDescriptor<BitmapFont> fontDescriptor;
+	private AssetDescriptor<ShaderProgram> shaderDescriptor;
 
 	public DFFontLoader(final FileHandleResolver resolver) {
 		super(resolver);
@@ -65,8 +67,10 @@ public class DFFontLoader extends AsynchronousAssetLoader<DFFont, DFFontLoader.D
 		final BitmapFontParameter bfParam = param.fontParameter != null ? param.fontParameter : defaultBitmapFontParameter;
 		final ShaderProgramParameters sParam = param.shaderParameters != null ? param.shaderParameters : null;
 		shaderName = sParam == null ? "shader/font-df.shader" : shaderName(fileName);
-		deps.add(new AssetDescriptor(file, BitmapFont.class, bfParam));
-		deps.add(new AssetDescriptor(shaderName, ShaderProgram.class, sParam));
+		fontDescriptor = new AssetDescriptor<BitmapFont>(file, BitmapFont.class, bfParam);
+		shaderDescriptor = new AssetDescriptor<ShaderProgram>(shaderName, ShaderProgram.class, sParam);
+		deps.add(fontDescriptor);
+		deps.add(shaderDescriptor);
 
 		return deps;
 	}
@@ -89,8 +93,8 @@ public class DFFontLoader extends AsynchronousAssetLoader<DFFont, DFFontLoader.D
 
 	@Override
 	public DFFont loadSync(final AssetManager manager, final String fileName, final FileHandle file, final DFFontParameter parameter) {
-		final ShaderProgram program = manager.get(shaderName, ShaderProgram.class);
-		final BitmapFont font = manager.get(fileName, BitmapFont.class);
+		final ShaderProgram program = manager.get(shaderDescriptor.fileName, ShaderProgram.class);
+		final BitmapFont font = manager.get(fontDescriptor.fileName, BitmapFont.class);
 		return new DFFont(baseSize, font, program);
 	}
 

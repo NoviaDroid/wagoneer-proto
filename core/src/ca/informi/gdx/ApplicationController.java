@@ -1,11 +1,12 @@
-package ca.informi;
+package ca.informi.gdx;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.informi.IntervalTimer.Interval;
+import ca.informi.service.IntervalTimer;
 import ca.informi.service.ResourceService;
 import ca.informi.service.Services;
+import ca.informi.service.IntervalTimer.Interval;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -80,10 +81,6 @@ public abstract class ApplicationController {
 		return delegate;
 	}
 
-	protected abstract void addInitialDelegates();
-
-	protected abstract void addServices(Services services);
-
 	public void create() {
 		Gdx.graphics.setTitle(getTitle());
 		delegates = new ArrayList<ApplicationDelegateInfo>();
@@ -96,8 +93,7 @@ public abstract class ApplicationController {
 		addServices(services);
 		for (final Object service : services) {
 			if (service instanceof ApplicationDelegate) {
-				delegates.add(new ApplicationDelegateInfo(
-						(ApplicationDelegate) service));
+				delegates.add(new ApplicationDelegateInfo((ApplicationDelegate) service));
 			}
 		}
 		addInitialDelegates();
@@ -116,21 +112,9 @@ public abstract class ApplicationController {
 		services.dispose();
 	}
 
-	private int findDelegateInfoIndexForDelegate(
-			final ApplicationDelegate delegate) {
-		for (int i = 0; i < delegates.size(); ++i) {
-			ApplicationDelegateInfo info = delegates.get(i);
-			if (info.delegate.equals(delegate))
-				return i;
-		}
-		return -1;
-	}
-
 	public Listener getApplicationListener() {
 		return applicationListener;
 	}
-
-	protected abstract String getTitle();
 
 	public void pause() {
 		paused = true;
@@ -155,30 +139,25 @@ public abstract class ApplicationController {
 			if (!delegateInfo.ready) {
 				delegateInfo.ready = delegateInfo.delegate.isReady();
 			}
-			if (delegateInfo.ready
-					&& (!paused || delegateInfo.delegate.updateWhilePaused())) {
+			if (delegateInfo.ready && (!paused || delegateInfo.delegate.updateWhilePaused())) {
 				delegateInfo.delegate.update(interval);
 			}
 		}
 		for (final ApplicationDelegateInfo delegateInfo : delegates) {
-			if (delegateInfo.ready
-					&& (!paused || delegateInfo.delegate.renderWhilePaused())) {
+			if (delegateInfo.ready && (!paused || delegateInfo.delegate.renderWhilePaused())) {
 				delegateInfo.delegate.render();
 			}
 		}
 	}
 
-	public ApplicationDelegate replace(final ApplicationDelegate delegate,
-			final ApplicationDelegate with) {
+	public ApplicationDelegate replace(final ApplicationDelegate delegate, final ApplicationDelegate with) {
 		Gdx.app.postRunnable(new Runnable() {
 			@Override
 			public void run() {
-				final ApplicationDelegateInfo withInfo = new ApplicationDelegateInfo(
-						with);
+				final ApplicationDelegateInfo withInfo = new ApplicationDelegateInfo(with);
 				final int index = findDelegateInfoIndexForDelegate(delegate);
 				if (index == -1) {
-					Gdx.app.log("ApplicationController", "Delegate to remove "
-							+ delegate + " was not present");
+					Gdx.app.log("ApplicationController", "Delegate to remove " + delegate + " was not present");
 					delegates.add(withInfo);
 				} else {
 					delegates.set(index, withInfo);
@@ -210,5 +189,19 @@ public abstract class ApplicationController {
 			delegateInfo.delegate.suspend();
 		}
 	}
+
+	private int findDelegateInfoIndexForDelegate(final ApplicationDelegate delegate) {
+		for (int i = 0; i < delegates.size(); ++i) {
+			final ApplicationDelegateInfo info = delegates.get(i);
+			if (info.delegate.equals(delegate)) return i;
+		}
+		return -1;
+	}
+
+	protected abstract void addInitialDelegates();
+
+	protected abstract void addServices(Services services);
+
+	protected abstract String getTitle();
 
 }

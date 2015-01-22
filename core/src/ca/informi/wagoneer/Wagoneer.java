@@ -1,6 +1,6 @@
 package ca.informi.wagoneer;
 
-import ca.informi.ApplicationController;
+import ca.informi.gdx.ApplicationController;
 import ca.informi.service.Services;
 import ca.informi.wagoneer.screen.GameScreen;
 

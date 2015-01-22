@@ -3,7 +3,7 @@ package ca.informi.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import ca.informi.ApplicationDelegate;
+import ca.informi.gdx.ApplicationDelegate;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;

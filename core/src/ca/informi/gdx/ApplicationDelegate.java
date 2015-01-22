@@ -1,8 +1,9 @@
-package ca.informi;
+package ca.informi.gdx;
 
 import java.util.Locale;
 
-import ca.informi.IntervalTimer.Interval;
+import ca.informi.service.IntervalTimer;
+import ca.informi.service.IntervalTimer.Interval;
 
 import com.badlogic.gdx.ApplicationListener;
 

@@ -1,6 +1,6 @@
-package ca.informi;
+package ca.informi.gdx.assets.loaders;
 
-import ca.informi.ShaderProgramLoader.ShaderProgramParameters;
+import ca.informi.gdx.assets.loaders.ShaderProgramLoader.ShaderProgramParameters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;

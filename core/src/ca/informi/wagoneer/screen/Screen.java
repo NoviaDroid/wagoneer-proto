@@ -1,6 +1,6 @@
 package ca.informi.wagoneer.screen;
 
-import ca.informi.ApplicationDelegate;
+import ca.informi.gdx.ApplicationDelegate;
 
 import com.badlogic.gdx.Gdx;
 

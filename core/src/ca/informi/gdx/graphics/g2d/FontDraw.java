@@ -1,4 +1,4 @@
-package ca.informi;
+package ca.informi.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

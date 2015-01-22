@@ -1,7 +1,7 @@
 package ca.informi.service;
 
-import ca.informi.ApplicationDelegate;
-import ca.informi.IntervalTimer.Interval;
+import ca.informi.gdx.ApplicationDelegate;
+import ca.informi.service.IntervalTimer.Interval;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
