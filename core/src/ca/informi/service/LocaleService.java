@@ -1,6 +1,8 @@
-package ca.informi;
+package ca.informi.service;
 
 import java.util.Locale;
+
+import ca.informi.ApplicationDelegate;
 
 import com.badlogic.gdx.utils.I18NBundle;
 

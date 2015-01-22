@@ -1,4 +1,4 @@
-package ca.informi;
+package ca.informi.service;
 
 import java.util.ArrayList;
 import java.util.Collection;

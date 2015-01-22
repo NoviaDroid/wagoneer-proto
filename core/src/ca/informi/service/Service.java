@@ -1,4 +1,6 @@
-package ca.informi;
+package ca.informi.service;
+
+import ca.informi.ApplicationDelegate;
 
 public interface Service {
 

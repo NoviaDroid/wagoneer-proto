@@ -1,14 +1,14 @@
 package ca.informi.wagoneer;
 
 import ca.informi.ApplicationController;
-import ca.informi.Services;
-import ca.informi.wagoneer.screen.TitleScreen;
+import ca.informi.service.Services;
+import ca.informi.wagoneer.screen.GameScreen;
 
 public class Wagoneer extends ApplicationController {
 
 	@Override
 	protected void addInitialDelegates() {
-		add(new TitleScreen());
+		add(new GameScreen());
 	}
 
 	@Override

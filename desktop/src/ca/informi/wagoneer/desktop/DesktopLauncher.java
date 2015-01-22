@@ -1,6 +1,6 @@
 package ca.informi.wagoneer.desktop;
 
-import ca.informi.debug.TestApp;
+import ca.informi.wagoneer.Wagoneer;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -11,9 +11,7 @@ public class DesktopLauncher {
 		final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 720;
-		// new LwjglApplication(new Wagoneer().getApplicationListener(),
-		// config);
-		new LwjglApplication(new TestApp(), config);
+		new LwjglApplication(new Wagoneer().getApplicationListener(), config);
 	}
 
 }

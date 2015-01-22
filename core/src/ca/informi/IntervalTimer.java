@@ -1,5 +1,7 @@
 package ca.informi;
 
+import ca.informi.service.Service;
+
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class IntervalTimer extends ApplicationDelegate implements Service {

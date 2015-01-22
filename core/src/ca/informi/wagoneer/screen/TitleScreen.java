@@ -2,9 +2,9 @@ package ca.informi.wagoneer.screen;
 
 import ca.informi.FontDraw;
 import ca.informi.IntervalTimer.Interval;
-import ca.informi.ResourcePackage;
-import ca.informi.ResourcePackage.Ready;
 import ca.informi.gdx.graphics.g2d.DFFont;
+import ca.informi.service.ResourcePackage;
+import ca.informi.service.ResourcePackage.Ready;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -19,19 +19,17 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class TitleScreen extends Screen {
 
 	private class MyResourcePackage extends ResourcePackage {
-		final Handle<Music> music = add("music/logo.ogg", Music.class);
-		final Handle<TextureAtlas> atlas = new Handle<TextureAtlas>(new TextureAtlas("image/main.atlas"));
-		// final Handle<TextureAtlas> atlas = add("image/main.atlas",
-		// TextureAtlas.class);
-		final Handle<DFFont> font = add("font/syncopate-df.fnt", DFFont.class);
+		final Handle<TextureAtlas> atlas = add("image/main.atlas", TextureAtlas.class);
 		final Handle<I18NBundle> bundle = add("bundle/Title", I18NBundle.class);
+		final Handle<DFFont> font = add("font/syncopate-df.fnt", DFFont.class);
+		final Handle<Music> music = add("music/logo.ogg", Music.class);
 	}
 
+	private OrthographicCamera camera;
+	private Sprite logo;
 	private final MyResourcePackage resources = new MyResourcePackage();
 	private SpriteBatch spriteBatch;
-	private OrthographicCamera camera;
 	private FitViewport viewport;
-	private Sprite logo;
 
 	@Override
 	public void added() {
@@ -40,14 +38,13 @@ public class TitleScreen extends Screen {
 	@Override
 	public void create() {
 		spriteBatch = controller.services.get(SpriteBatch.class);
-		resources.load(this)
-					.onReady(new Ready() {
-						@Override
-						public void onReady() {
-							resources.music.o.play();
-							logo = resources.atlas.o.createSprite("logo");
-						}
-					});
+		resources.load(this).onReady(new Ready() {
+			@Override
+			public void onReady() {
+				resources.music.o.play();
+				logo = resources.atlas.o.createSprite("logo");
+			}
+		});
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(1280, 720, camera);
 	}

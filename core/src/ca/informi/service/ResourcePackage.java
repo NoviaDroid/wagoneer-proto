@@ -1,7 +1,9 @@
-package ca.informi;
+package ca.informi.service;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import ca.informi.ApplicationDelegate;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -19,13 +21,13 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 		private final AssetDescriptor<T> descriptor;
 		public T o;
 
+		Handle(final AssetDescriptor<T> descriptor) {
+			this.descriptor = descriptor;
+		}
+
 		public Handle(final T object) {
 			descriptor = null;
 			o = object;
-		}
-
-		Handle(final AssetDescriptor<T> descriptor) {
-			this.descriptor = descriptor;
 		}
 	}
 
@@ -79,10 +81,10 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 	}
 
 	protected String name;
+	protected Ready onReady;
 	protected ApplicationDelegate owner;
 	protected ResourcePackagePayloadParameters parameters = new ResourcePackagePayloadParameters(this);
 	protected boolean ready;
-	protected Ready onReady;
 
 	public <T> Handle<T> add(final String filename, final Class<T> klass) {
 		final Handle<T> result = new Handle<T>(new AssetDescriptor<T>(filename, klass));
@@ -93,14 +95,15 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 
 	@Override
 	public void dispose() {
-		final ResourceService resources = owner.controller.services.get(ResourceService.class);
+		final ResourceService resources = owner.getController().services.get(ResourceService.class);
 		resources.unload(name);
 	}
 
 	@Override
 	public void finishedLoading(final AssetManager assetManager, final String fileName, final Class type) {
 		this.ready = true;
-		if (onReady != null) onReady.onReady();
+		if (onReady != null)
+			onReady.onReady();
 	}
 
 	public boolean isReady() {
@@ -110,7 +113,7 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 	public ResourcePackage load(final ApplicationDelegate delegate) {
 		owner = delegate;
 		this.name = "package:" + delegate.toString();
-		final ResourceService resources = owner.controller.services.get(ResourceService.class);
+		final ResourceService resources = owner.getController().services.get(ResourceService.class);
 		resources.load(name, ResourcePackagePayload.class, parameters);
 		return this;
 	}

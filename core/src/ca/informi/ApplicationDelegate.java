@@ -22,6 +22,10 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 	public void dispose() {
 	}
 
+	public ApplicationController getController() {
+		return controller;
+	}
+
 	public boolean isReady() {
 		return true;
 	}
@@ -41,6 +45,9 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 	}
 
 	public void removed() {
+	}
+
+	protected void removeInternal() {
 	}
 
 	@Override
@@ -77,9 +84,6 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 
 	public boolean updateWhilePaused() {
 		return false;
-	}
-
-	protected void removeInternal() {
 	}
 
 }
