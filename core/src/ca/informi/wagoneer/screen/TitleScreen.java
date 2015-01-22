@@ -2,9 +2,10 @@ package ca.informi.wagoneer.screen;
 
 import ca.informi.gdx.graphics.g2d.DFFont;
 import ca.informi.gdx.graphics.g2d.FontDraw;
-import ca.informi.service.ResourcePackage;
 import ca.informi.service.IntervalTimer.Interval;
+import ca.informi.service.ResourcePackage;
 import ca.informi.service.ResourcePackage.Ready;
+import ca.informi.service.Services;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -37,14 +38,15 @@ public class TitleScreen extends Screen {
 
 	@Override
 	public void create() {
-		spriteBatch = controller.services.get(SpriteBatch.class);
-		resources.load(this).onReady(new Ready() {
-			@Override
-			public void onReady() {
-				resources.music.o.play();
-				logo = resources.atlas.o.createSprite("logo");
-			}
-		});
+		spriteBatch = Services.instance.get(SpriteBatch.class);
+		resources.load(this)
+					.onReady(new Ready() {
+						@Override
+						public void onReady() {
+							resources.music.o.play();
+							logo = resources.atlas.o.createSprite("logo");
+						}
+					});
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(1280, 720, camera);
 	}

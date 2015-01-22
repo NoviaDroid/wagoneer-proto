@@ -35,6 +35,7 @@ public class ShaderProgramLoader extends AsynchronousAssetLoader<ShaderProgram, 
 		this.resolver = resolver;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Array<AssetDescriptor> getDependencies(final String fileName, final FileHandle file, final ShaderProgramParameters parameter) {
 		return null;

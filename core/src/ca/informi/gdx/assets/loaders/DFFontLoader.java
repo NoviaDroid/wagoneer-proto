@@ -59,6 +59,7 @@ public class DFFontLoader extends AsynchronousAssetLoader<DFFont, DFFontLoader.D
 		super(resolver);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Array<AssetDescriptor> getDependencies(final String fileName, final FileHandle file, final DFFontParameter paramIn) {
 		final Array<AssetDescriptor> deps = new Array<AssetDescriptor>();

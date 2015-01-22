@@ -2,7 +2,6 @@ package ca.informi.gdx;
 
 import java.util.Locale;
 
-import ca.informi.service.IntervalTimer;
 import ca.informi.service.IntervalTimer.Interval;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -48,9 +47,6 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 	public void removed() {
 	}
 
-	protected void removeInternal() {
-	}
-
 	@Override
 	public void render() {
 	}
@@ -84,7 +80,10 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 	}
 
 	public boolean updateWhilePaused() {
-		return false;
+		return true;
+	}
+
+	protected void removeInternal() {
 	}
 
 }

@@ -21,13 +21,13 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 		private final AssetDescriptor<T> descriptor;
 		public T o;
 
-		Handle(final AssetDescriptor<T> descriptor) {
-			this.descriptor = descriptor;
-		}
-
 		public Handle(final T object) {
 			descriptor = null;
 			o = object;
+		}
+
+		Handle(final AssetDescriptor<T> descriptor) {
+			this.descriptor = descriptor;
 		}
 	}
 
@@ -45,17 +45,18 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 	};
 
 	public static class ResourcePackagePayloadLoader extends
-			SynchronousAssetLoader<ResourcePackagePayload, ResourcePackagePayloadParameters> {
+			SynchronousAssetLoader<ResourcePackagePayload, ResourcePackagePayloadParameter> {
 
 		public ResourcePackagePayloadLoader(final FileHandleResolver resolver) {
 			super(resolver);
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public Array<AssetDescriptor> getDependencies(final String fileName, final FileHandle file,
-				final ResourcePackagePayloadParameters parameter) {
+				final ResourcePackagePayloadParameter parameter) {
 			final Array<AssetDescriptor> array = new Array<AssetDescriptor>();
-			for (final Handle<Object> handle : parameter.waiting) {
+			for (final Handle<Object> handle : parameter.dependencies) {
 				array.add(handle.descriptor);
 			}
 			return array;
@@ -63,19 +64,19 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 
 		@Override
 		public ResourcePackagePayload load(final AssetManager assetManager, final String fileName, final FileHandle file,
-				final ResourcePackagePayloadParameters parameter) {
-			for (final Handle<Object> handle : parameter.waiting) {
+				final ResourcePackagePayloadParameter parameter) {
+			for (final Handle<Object> handle : parameter.dependencies) {
 				handle.o = assetManager.get(handle.descriptor);
 			}
-			return new ResourcePackagePayload(parameter.waiting);
+			return new ResourcePackagePayload(parameter.dependencies);
 		}
 
 	}
 
-	public static class ResourcePackagePayloadParameters extends AssetLoaderParameters<ResourcePackagePayload> {
-		public Set<Handle<Object>> waiting = new HashSet<Handle<Object>>();
+	public static class ResourcePackagePayloadParameter extends AssetLoaderParameters<ResourcePackagePayload> {
+		public Set<Handle<Object>> dependencies = new HashSet<Handle<Object>>();
 
-		ResourcePackagePayloadParameters(final LoadedCallback loadedCallback) {
+		ResourcePackagePayloadParameter(final LoadedCallback loadedCallback) {
 			this.loadedCallback = loadedCallback;
 		}
 	}
@@ -83,27 +84,27 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 	protected String name;
 	protected Ready onReady;
 	protected ApplicationDelegate owner;
-	protected ResourcePackagePayloadParameters parameters = new ResourcePackagePayloadParameters(this);
+	protected ResourcePackagePayloadParameter parameter = new ResourcePackagePayloadParameter(this);
 	protected boolean ready;
 
+	@SuppressWarnings("unchecked")
 	public <T> Handle<T> add(final String filename, final Class<T> klass) {
 		final Handle<T> result = new Handle<T>(new AssetDescriptor<T>(filename, klass));
-		parameters.waiting.add((Handle<Object>) result);
+		parameter.dependencies.add((Handle<Object>) result);
 		ready = false;
 		return result;
 	}
 
 	@Override
 	public void dispose() {
-		final ResourceService resources = owner.getController().services.get(ResourceService.class);
+		final ResourceService resources = Services.instance.get(ResourceService.class);
 		resources.unload(name);
 	}
 
 	@Override
 	public void finishedLoading(final AssetManager assetManager, final String fileName, final Class type) {
 		this.ready = true;
-		if (onReady != null)
-			onReady.onReady();
+		if (onReady != null) onReady.onReady();
 	}
 
 	public boolean isReady() {
@@ -113,8 +114,8 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 	public ResourcePackage load(final ApplicationDelegate delegate) {
 		owner = delegate;
 		this.name = "package:" + delegate.toString();
-		final ResourceService resources = owner.getController().services.get(ResourceService.class);
-		resources.load(name, ResourcePackagePayload.class, parameters);
+		final ResourceService resources = Services.instance.get(ResourceService.class);
+		resources.load(name, ResourcePackagePayload.class, parameter);
 		return this;
 	}
 

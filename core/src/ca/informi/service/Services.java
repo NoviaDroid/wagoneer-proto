@@ -9,7 +9,12 @@ import java.util.Map;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Services implements Collection<Object>, Disposable {
+
+	public static final Services instance = new Services();
 	public Map<Class<?>, Object> Objects = new IdentityHashMap<Class<?>, Object>();
+
+	private Services() {
+	}
 
 	@Override
 	public boolean add(final Object e) {
@@ -41,7 +46,9 @@ public class Services implements Collection<Object>, Disposable {
 
 	@Override
 	public boolean containsAll(final Collection<?> c) {
-		return Objects.values().containsAll(c) || Objects.keySet().containsAll(c);
+		return Objects.values()
+						.containsAll(c) || Objects.keySet()
+													.containsAll(c);
 	}
 
 	@Override
@@ -61,7 +68,8 @@ public class Services implements Collection<Object>, Disposable {
 
 	@Override
 	public Iterator<Object> iterator() {
-		return Objects.values().iterator();
+		return Objects.values()
+						.iterator();
 	}
 
 	@Override
@@ -106,12 +114,14 @@ public class Services implements Collection<Object>, Disposable {
 
 	@Override
 	public Object[] toArray() {
-		return Objects.values().toArray();
+		return Objects.values()
+						.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(final T[] a) {
-		return Objects.values().toArray(a);
+		return Objects.values()
+						.toArray(a);
 	}
 
 	private void endObject(final Object s) {

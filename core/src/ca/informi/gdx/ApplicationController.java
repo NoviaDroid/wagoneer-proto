@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.informi.service.IntervalTimer;
+import ca.informi.service.IntervalTimer.Interval;
 import ca.informi.service.ResourceService;
 import ca.informi.service.Services;
-import ca.informi.service.IntervalTimer.Interval;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -71,8 +71,6 @@ public abstract class ApplicationController {
 	private IntervalTimer intervalTimer;
 	private boolean paused;
 
-	public Services services;
-
 	protected ApplicationController() {
 	}
 
@@ -84,14 +82,13 @@ public abstract class ApplicationController {
 	public void create() {
 		Gdx.graphics.setTitle(getTitle());
 		delegates = new ArrayList<ApplicationDelegateInfo>();
-		services = new Services();
 		intervalTimer = new IntervalTimer();
-		services.add(intervalTimer);
-		services.add(new ResourceService());
-		services.add(new SpriteBatch());
+		Services.instance.add(intervalTimer);
+		Services.instance.add(new ResourceService());
+		Services.instance.add(new SpriteBatch());
 
-		addServices(services);
-		for (final Object service : services) {
+		addServices(Services.instance);
+		for (final Object service : Services.instance) {
 			if (service instanceof ApplicationDelegate) {
 				delegates.add(new ApplicationDelegateInfo((ApplicationDelegate) service));
 			}
@@ -109,7 +106,7 @@ public abstract class ApplicationController {
 			delegateInfo.delegate.dispose();
 		}
 		delegates.clear();
-		services.dispose();
+		Services.instance.dispose();
 	}
 
 	public Listener getApplicationListener() {

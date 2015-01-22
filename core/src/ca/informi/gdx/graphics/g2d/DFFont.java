@@ -1,6 +1,5 @@
 package ca.informi.gdx.graphics.g2d;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -13,9 +12,8 @@ public class DFFont implements Disposable {
 		void applyUniforms(DFFont font, ShaderProgram program);
 	}
 
-	protected BitmapFont font;
-	protected Texture fontTexture;
-	protected ShaderProgram fontShader;
+	public final BitmapFont font;
+	public final ShaderProgram fontShader;
 
 	private Batch batchInUse;
 
