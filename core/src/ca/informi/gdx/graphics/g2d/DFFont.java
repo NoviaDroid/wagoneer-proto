@@ -36,11 +36,23 @@ public class DFFont implements Disposable {
 		uniformSmoothing = fontShader.getUniformLocation("u_smoothing");
 	}
 
+	public BitmapFont begin(final Batch batch) {
+		batch.setShader(fontShader);
+		applyUniforms();
+		batchInUse = batch;
+		return font;
+	}
+
 	@Override
 	public void dispose() {
 		// These are all passed in, and not owned by the font itself.
 		// This makes use with AssetManager easy, and other use hard.
 		// fontTexture.dispose(); fontShader.dispose(); font.dispose();
+	}
+
+	public void end() {
+		batchInUse.setShader(null);
+		batchInUse = null;
 	}
 
 	public void setApplyUniforms(final DFFontApplyUniforms applyUniforms) {

@@ -3,16 +3,16 @@ package ca.informi.wagoneer.screen;
 import ca.informi.FontDraw;
 import ca.informi.IntervalTimer.Interval;
 import ca.informi.ResourcePackage;
+import ca.informi.ResourcePackage.Ready;
 import ca.informi.gdx.graphics.g2d.DFFont;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -20,17 +20,18 @@ public class TitleScreen extends Screen {
 
 	private class MyResourcePackage extends ResourcePackage {
 		final Handle<Music> music = add("music/logo.ogg", Music.class);
-		final Handle<Texture> logo = add("image/logo.png", Texture.class);
+		final Handle<TextureAtlas> atlas = new Handle<TextureAtlas>(new TextureAtlas("image/main.atlas"));
+		// final Handle<TextureAtlas> atlas = add("image/main.atlas",
+		// TextureAtlas.class);
 		final Handle<DFFont> font = add("font/syncopate-df.fnt", DFFont.class);
 		final Handle<I18NBundle> bundle = add("bundle/Title", I18NBundle.class);
 	}
 
 	private final MyResourcePackage resources = new MyResourcePackage();
 	private SpriteBatch spriteBatch;
-	private float totalTime;
-	private float scale;
 	private OrthographicCamera camera;
 	private FitViewport viewport;
+	private Sprite logo;
 
 	@Override
 	public void added() {
@@ -39,7 +40,14 @@ public class TitleScreen extends Screen {
 	@Override
 	public void create() {
 		spriteBatch = controller.services.get(SpriteBatch.class);
-		resources.load(this);
+		resources.load(this)
+					.onReady(new Ready() {
+						@Override
+						public void onReady() {
+							resources.music.o.play();
+							logo = resources.atlas.o.createSprite("logo");
+						}
+					});
 		camera = new OrthographicCamera();
 		viewport = new FitViewport(1280, 720, camera);
 	}
@@ -55,22 +63,10 @@ public class TitleScreen extends Screen {
 	}
 
 	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removed() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void render() {
-		Gdx.gl.glClearColor(0.f, 0.f, 0.f, 0.f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
+
+		logo.draw(spriteBatch);
 
 		final BitmapFont font = resources.font.o.begin(spriteBatch);
 		resources.font.o.setSize(72);
@@ -79,7 +75,7 @@ public class TitleScreen extends Screen {
 
 		resources.font.o.setWeight(400);
 		resources.font.o.setSize(12);
-		font.draw(spriteBatch, resources.bundle.o.get("copyright"), 10, 16);
+		font.drawWrapped(spriteBatch, resources.bundle.o.get("copyright"), 50, 16, 1270);
 
 		resources.font.o.end();
 
@@ -92,25 +88,9 @@ public class TitleScreen extends Screen {
 	}
 
 	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void update(final Interval interval) {
 		if (Gdx.input.isButtonPressed(0)) {
-			Gdx.input.getTextInput(new TextInputListener() {
-				@Override
-				public void canceled() {
-					Gdx.app.log("TIL", "Cancelled");
-				}
-
-				@Override
-				public void input(final String text) {
-					Gdx.app.log("TIL", "String: " + text);
-				}
-			}, "Hello", "text", "hint");
+			controller.replace(this, new GameScreen());
 		}
 	}
 

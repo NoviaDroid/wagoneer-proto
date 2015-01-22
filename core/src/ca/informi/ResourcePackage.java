@@ -15,13 +15,22 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class ResourcePackage implements LoadedCallback, Disposable {
 
-	public class Handle<T> {
+	public static class Handle<T> {
 		private final AssetDescriptor<T> descriptor;
 		public T o;
+
+		public Handle(final T object) {
+			descriptor = null;
+			o = object;
+		}
 
 		Handle(final AssetDescriptor<T> descriptor) {
 			this.descriptor = descriptor;
 		}
+	}
+
+	public interface Ready {
+		void onReady();
 	}
 
 	public static class ResourcePackagePayload {
@@ -69,10 +78,11 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 		}
 	}
 
-	String name;
-	ApplicationDelegate owner;
-	ResourcePackagePayloadParameters parameters = new ResourcePackagePayloadParameters(this);
-	private boolean ready;
+	protected String name;
+	protected ApplicationDelegate owner;
+	protected ResourcePackagePayloadParameters parameters = new ResourcePackagePayloadParameters(this);
+	protected boolean ready;
+	protected Ready onReady;
 
 	public <T> Handle<T> add(final String filename, final Class<T> klass) {
 		final Handle<T> result = new Handle<T>(new AssetDescriptor<T>(filename, klass));
@@ -90,17 +100,24 @@ public class ResourcePackage implements LoadedCallback, Disposable {
 	@Override
 	public void finishedLoading(final AssetManager assetManager, final String fileName, final Class type) {
 		this.ready = true;
+		if (onReady != null) onReady.onReady();
 	}
 
 	public boolean isReady() {
 		return ready;
 	}
 
-	public void load(final ApplicationDelegate delegate) {
+	public ResourcePackage load(final ApplicationDelegate delegate) {
 		owner = delegate;
 		this.name = "package:" + delegate.toString();
 		final ResourceService resources = owner.controller.services.get(ResourceService.class);
 		resources.load(name, ResourcePackagePayload.class, parameters);
+		return this;
+	}
+
+	public Ready onReady(final Ready ready) {
+		this.onReady = ready;
+		return ready;
 	}
 
 }

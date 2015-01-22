@@ -7,6 +7,7 @@ import ca.informi.IntervalTimer.Interval;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -125,6 +126,9 @@ public abstract class ApplicationController {
 
 	public void render() {
 		final Interval interval = intervalTimer.getInterval();
+		Gdx.gl.glClearColor(0.f, 0.f, 0.f, 0.f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		for (final ApplicationDelegateInfo delegateInfo : delegates) {
 			delegateInfo.delegate.preUpdate();
 		}
@@ -144,13 +148,24 @@ public abstract class ApplicationController {
 	}
 
 	public ApplicationDelegate replace(final ApplicationDelegate delegate, final ApplicationDelegate with) {
-		final int index = delegates.indexOf(delegate);
-		if (index == -1) return add(with);
-		delegate.removed();
-		delegate.dispose();
-		delegates.set(index, new ApplicationDelegateInfo(with));
-		with.setController(this);
-		with.added();
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run() {
+				final ApplicationDelegateInfo withInfo = new ApplicationDelegateInfo(with);
+				final int index = delegates.indexOf(delegate);
+				if (index == -1) {
+					Gdx.app.log("ApplicationController", "Delegate to remove " + delegate + " was not present");
+					delegates.add(withInfo);
+				} else {
+					delegates.set(index, withInfo);
+				}
+				delegate.removed();
+				with.setController(delegate.controller);
+
+				delegate.dispose();
+				with.added();
+			}
+		});
 		return with;
 	}
 
