@@ -2,27 +2,23 @@ package ca.informi.gdx;
 
 import java.util.Locale;
 
-import ca.informi.service.IntervalTimer.Interval;
+import ca.informi.delegate.IntervalTimer.Interval;
 
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.utils.Disposable;
 
-public abstract class ApplicationDelegate implements ApplicationListener {
+public abstract class ApplicationDelegate implements Disposable {
 
-	protected ApplicationController controller;
+	protected final Controller controller = Controller.instance;
 	protected Locale locale;
 
 	public void added() {
 	}
 
-	@Override
-	public void create() {
+	public void addedSibling(final ApplicationDelegate delegate) {
+
 	}
 
-	@Override
-	public void dispose() {
-	}
-
-	public ApplicationController getController() {
+	public Controller getController() {
 		return controller;
 	}
 
@@ -30,7 +26,6 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 		return true;
 	}
 
-	@Override
 	public void pause() {
 
 	}
@@ -41,13 +36,15 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 
 	public final void remove() {
 		controller.remove(this);
-		removeInternal();
 	}
 
 	public void removed() {
 	}
 
-	@Override
+	public void removingSibling(final ApplicationDelegate delegate) {
+
+	}
+
 	public void render() {
 	}
 
@@ -55,17 +52,10 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 		return true;
 	}
 
-	@Override
 	public void resize(final int width, final int height) {
 	}
 
-	@Override
 	public void resume() {
-
-	}
-
-	public final void setController(final ApplicationController controller) {
-		this.controller = controller;
 	}
 
 	public void setLocale(final Locale currentLocale) {
@@ -73,7 +63,9 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 	}
 
 	public void suspend() {
+	}
 
+	public void unpause() {
 	}
 
 	public void update(final Interval interval) {
@@ -81,9 +73,6 @@ public abstract class ApplicationDelegate implements ApplicationListener {
 
 	public boolean updateWhilePaused() {
 		return true;
-	}
-
-	protected void removeInternal() {
 	}
 
 }
