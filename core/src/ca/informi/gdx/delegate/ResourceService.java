@@ -1,12 +1,13 @@
-package ca.informi.delegate;
+package ca.informi.gdx.delegate;
 
-import ca.informi.delegate.ResPackage.ResourcePackagePayload;
-import ca.informi.delegate.ResPackage.ResourcePackagePayloadLoader;
-import ca.informi.gdx.ApplicationDelegate;
 import ca.informi.gdx.assets.loaders.DFFontLoader;
+import ca.informi.gdx.assets.loaders.ProceduralTextureAtlasLoader;
 import ca.informi.gdx.assets.loaders.ShaderProgramLoader;
 import ca.informi.gdx.assets.loaders.resolvers.PrefixedAbsoluteFileHandleResolver;
+import ca.informi.gdx.delegate.ResPackage.ResourcePackagePayload;
+import ca.informi.gdx.delegate.ResPackage.ResourcePackagePayloadLoader;
 import ca.informi.gdx.graphics.g2d.DFFont;
+import ca.informi.gdx.graphics.g2d.ProceduralTextureAtlas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -38,6 +39,7 @@ public class ResourceService extends ApplicationDelegate {
 		assetManager.setLoader(DFFont.class, new DFFontLoader(resolver));
 		assetManager.setLoader(ResourcePackagePayload.class, new ResourcePackagePayloadLoader(resolver));
 		assetManager.setLoader(ShaderProgram.class, new ShaderProgramLoader(resolver));
+		assetManager.setLoader(ProceduralTextureAtlas.class, new ProceduralTextureAtlasLoader(resolver));
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class PlayerWagonHead extends Box2DObject implements Renderable {
 
 	public PlayerWagonHead(final Vector2 position, final float angle) {
 		super(getBodyDef(position, angle), getFixtureDef());
-		renderer = new Box2DSpriteRenderer(this, "ship_head", Layers.GAME_FOREGROUND);
+		renderer = new Box2DSpriteRenderer(this, "hauler_white", Layers.GAME_FOREGROUND);
 	}
 
 	@Override

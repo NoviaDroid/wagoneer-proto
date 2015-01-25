@@ -1,8 +1,9 @@
-package ca.informi.gdx;
+package ca.informi.gdx.delegate;
 
 import java.util.Locale;
 
-import ca.informi.delegate.IntervalTimer.Interval;
+import ca.informi.gdx.delegate.IntervalTimer.Interval;
+import ca.informi.gdx.delegate.controller.Controller;
 
 import com.badlogic.gdx.utils.Disposable;
 

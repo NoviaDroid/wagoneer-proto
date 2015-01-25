@@ -1,6 +1,7 @@
-package ca.informi.gdx;
+package ca.informi.gdx.delegate.controller;
 
-import ca.informi.delegate.IntervalTimer.Interval;
+import ca.informi.gdx.delegate.ApplicationDelegate;
+import ca.informi.gdx.delegate.IntervalTimer.Interval;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;

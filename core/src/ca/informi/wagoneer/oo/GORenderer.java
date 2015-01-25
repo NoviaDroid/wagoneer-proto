@@ -42,7 +42,6 @@ class GORenderer implements RenderableContainer, Disposable {
 	};
 
 	final IntMap<Renderable> renderables = new IntMap<Renderable>();
-	final Array<Renderable> rq = new Array<Renderable>();
 	final IntMap<Renderable> visibleAlways = new IntMap<Renderable>();
 	final IntMap<Renderable> visibles = new IntMap<Renderable>();
 
@@ -51,7 +50,6 @@ class GORenderer implements RenderableContainer, Disposable {
 		renderables.clear();
 		visibles.clear();
 		visibleAlways.clear();
-		rq.clear();
 	}
 
 	@Override
@@ -75,25 +73,25 @@ class GORenderer implements RenderableContainer, Disposable {
 		visibleAlways.remove(id);
 	}
 
-	public void render(final World world, final Camera camera, final RenderOptions renderOptions) {
-		renderRQ(renderOptions);
+	public void render(final World world, final Camera camera, final RenderOptions renderOptions, final Array<Renderable> rq) {
+		renderRQ(renderOptions, rq);
 		debugRenderer.render(world, camera.combined);
 	}
 
-	public void update(final World world, final OrthographicCamera camera) {
+	public void update(final World world, final OrthographicCamera camera, final Array<Renderable> rq) {
 		rq.clear();
 		updateCalculateVisibles(world, camera);
-		updateBuildRQ();
+		updateBuildRQ(rq);
 	}
 
-	private void renderRQ(final RenderOptions opts) {
+	private void renderRQ(final RenderOptions opts, final Array<Renderable> rq) {
 		for (int i = 0; i < rq.size; ++i) {
 			final Renderable r = rq.get(i);
 			r.render(opts);
 		}
 	}
 
-	private void updateBuildRQ() {
+	private void updateBuildRQ(final Array<Renderable> rq) {
 		final Values<Renderable> visible = visibleAlways.values();
 		for (final Renderable r : visible) {
 			rq.add(r);

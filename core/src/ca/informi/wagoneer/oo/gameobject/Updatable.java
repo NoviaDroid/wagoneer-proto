@@ -1,6 +1,6 @@
 package ca.informi.wagoneer.oo.gameobject;
 
-import ca.informi.delegate.IntervalTimer.Interval;
+import ca.informi.gdx.delegate.IntervalTimer.Interval;
 
 public interface Updatable {
 

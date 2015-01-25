@@ -1,9 +1,8 @@
-package ca.informi.delegate.screen;
+package ca.informi.gdx.delegate.screen;
 
-import ca.informi.delegate.ResPackage;
-import ca.informi.delegate.ResPackage.Ready;
-import ca.informi.gdx.ApplicationDelegate;
-import ca.informi.gdx.Controller;
+import ca.informi.gdx.delegate.ApplicationDelegate;
+import ca.informi.gdx.delegate.ResPackage;
+import ca.informi.gdx.delegate.controller.Controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -13,6 +12,7 @@ public abstract class Screen<T extends ResPackage> extends ApplicationDelegate {
 	private boolean beingReplaced;
 	private boolean disposed;
 	private final T hiddenResources;
+	private Runnable onAddedRunnable;
 	private boolean ready = false;
 	protected T resources;
 
@@ -20,8 +20,9 @@ public abstract class Screen<T extends ResPackage> extends ApplicationDelegate {
 		hiddenResources = rp;
 	}
 
-	public void add() {
+	public Screen<T> add() {
 		add(null);
+		return this;
 	}
 
 	@Override
@@ -32,6 +33,7 @@ public abstract class Screen<T extends ResPackage> extends ApplicationDelegate {
 		super.added();
 		addedInternal();
 		resize(width, height);
+		if (onAddedRunnable != null) onAddedRunnable.run();
 	}
 
 	@Override
@@ -58,10 +60,16 @@ public abstract class Screen<T extends ResPackage> extends ApplicationDelegate {
 		return beingReplaced;
 	}
 
-	public final void replace(final Screen<?> replaces) {
+	public Screen<T> onAdded(final Runnable runnable) {
+		onAddedRunnable = runnable;
+		return this;
+	}
+
+	public final Screen<T> replace(final Screen<?> replaces) {
 		if (replaces.beingReplaced) { throw new GdxRuntimeException("Screen is already being replaced"); }
 		replaces.beingReplaced = true;
 		add(replaces);
+		return this;
 	}
 
 	private void add(final Screen<?> replaces) {
@@ -70,9 +78,9 @@ public abstract class Screen<T extends ResPackage> extends ApplicationDelegate {
 			Controller.instance.add(this);
 		} else {
 			hiddenResources.load(this)
-							.onReady(new Ready() {
+							.onReady(new Runnable() {
 								@Override
-								public void onReady() {
+								public void run() {
 									if (!disposed) {
 										capture.ready = true;
 										capture.resources = hiddenResources;

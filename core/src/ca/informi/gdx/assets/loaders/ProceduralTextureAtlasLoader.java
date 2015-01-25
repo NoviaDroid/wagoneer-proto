@@ -28,6 +28,7 @@ public class ProceduralTextureAtlasLoader extends SynchronousAssetLoader<Procedu
 		super(resolver);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Array<AssetDescriptor> getDependencies(final String fileName, final FileHandle file,
 			final ProceduralTextureAtlasParameter parameter) {

@@ -1,14 +1,12 @@
-package ca.informi.wagoneer.screen;
+package ca.informi.gdx.delegate.screen;
 
-import ca.informi.delegate.IntervalTimer.Interval;
-import ca.informi.delegate.ResPackage;
-import ca.informi.delegate.screen.Screen;
-import ca.informi.gdx.Controller;
-import ca.informi.gdx.SpriteBatchDelegate;
+import ca.informi.gdx.delegate.ResPackage;
+import ca.informi.gdx.delegate.SpriteBatchDelegate;
+import ca.informi.gdx.delegate.IntervalTimer.Interval;
+import ca.informi.gdx.delegate.controller.Controller;
+import ca.informi.gdx.delegate.screen.TitleScreen.MyResourcePackage;
 import ca.informi.gdx.graphics.g2d.DFFont;
 import ca.informi.gdx.graphics.g2d.FontDraw;
-import ca.informi.wagoneer.oo.GameScreen;
-import ca.informi.wagoneer.screen.TitleScreen.MyResourcePackage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;

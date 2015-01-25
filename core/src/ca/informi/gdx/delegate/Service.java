@@ -1,4 +1,4 @@
-package ca.informi.delegate;
+package ca.informi.gdx.delegate;
 //package ca.informi.service;
 //
 //import ca.informi.gdx.ApplicationDelegate;

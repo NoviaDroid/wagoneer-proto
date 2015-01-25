@@ -1,10 +1,12 @@
-package ca.informi.gdx;
+package ca.informi.gdx.delegate.controller;
 
-import ca.informi.delegate.IntervalTimer;
-import ca.informi.delegate.IntervalTimer.Interval;
-import ca.informi.delegate.LocaleService;
-import ca.informi.delegate.ResourceService;
-import ca.informi.delegate.screen.Screen;
+import ca.informi.gdx.delegate.ApplicationDelegate;
+import ca.informi.gdx.delegate.IntervalTimer;
+import ca.informi.gdx.delegate.LocaleService;
+import ca.informi.gdx.delegate.ResourceService;
+import ca.informi.gdx.delegate.SpriteBatchDelegate;
+import ca.informi.gdx.delegate.IntervalTimer.Interval;
+import ca.informi.gdx.delegate.screen.Screen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -54,11 +56,9 @@ public abstract class Controller {
 	}
 
 	public static Controller instance;
-
 	private final Listener applicationListener = new Listener(this);
 	private final DelegateContainer delegates = new DelegateContainer();
 	private IntervalTimer intervalTimer;
-
 	private boolean paused;
 
 	protected Controller() {

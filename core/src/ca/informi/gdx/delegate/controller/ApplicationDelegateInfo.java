@@ -1,4 +1,6 @@
-package ca.informi.gdx;
+package ca.informi.gdx.delegate.controller;
+
+import ca.informi.gdx.delegate.ApplicationDelegate;
 
 class ApplicationDelegateInfo {
 	public ApplicationDelegate delegate;

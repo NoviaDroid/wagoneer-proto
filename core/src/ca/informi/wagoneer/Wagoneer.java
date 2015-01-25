@@ -3,11 +3,11 @@ package ca.informi.wagoneer;
 import java.util.HashMap;
 import java.util.Map;
 
-import ca.informi.delegate.screen.Screen;
-import ca.informi.gdx.ApplicationDelegate;
-import ca.informi.gdx.Controller;
-import ca.informi.wagoneer.oo.GameScreen;
-import ca.informi.wagoneer.screen.TitleScreen;
+import ca.informi.gdx.delegate.ApplicationDelegate;
+import ca.informi.gdx.delegate.controller.Controller;
+import ca.informi.gdx.delegate.screen.Screen;
+import ca.informi.gdx.delegate.screen.TitleScreen;
+import ca.informi.wagoneer.oo.Game;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -26,12 +26,12 @@ public class Wagoneer extends Controller {
 			put("game", new EntryPoint() {
 				@Override
 				public Array<ApplicationDelegate> createInitialDelegates() {
-					return null;
+					return new Array<ApplicationDelegate>(new ApplicationDelegate[] { new Game() });
 				}
 
 				@Override
 				public Screen<?> createInitialScreen() {
-					return new GameScreen();
+					return null;
 				}
 			});
 			put(DEFAULT, new EntryPoint() {

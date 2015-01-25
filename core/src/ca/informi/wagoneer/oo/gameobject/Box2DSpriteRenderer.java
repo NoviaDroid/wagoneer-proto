@@ -1,7 +1,7 @@
 package ca.informi.wagoneer.oo.gameobject;
 
-import ca.informi.delegate.SpriteService;
-import ca.informi.gdx.Controller;
+import ca.informi.gdx.delegate.controller.Controller;
+import ca.informi.wagoneer.oo.Game;
 import ca.informi.wagoneer.oo.RenderOptions;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,8 +16,8 @@ public class Box2DSpriteRenderer implements Renderable {
 
 	public Box2DSpriteRenderer(final Box2DObject parent, final String textureName, final int layer) {
 		this.parent = parent;
-		final SpriteService ss = Controller.instance.get(SpriteService.class);
-		sprite = ss.createSprite(textureName);
+		final Game game = Controller.instance.get(Game.class);
+		sprite = game.resources.oryxAtlas.o.createSprite("hauler_white");
 		this.layer = layer;
 	}
 

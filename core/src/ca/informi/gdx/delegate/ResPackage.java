@@ -1,10 +1,9 @@
-package ca.informi.delegate;
+package ca.informi.gdx.delegate;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import ca.informi.gdx.ApplicationDelegate;
-import ca.informi.gdx.Controller;
+import ca.informi.gdx.delegate.controller.Controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -25,8 +24,8 @@ public class ResPackage implements LoadedCallback, Disposable {
 	}
 
 	public static class ResHandle<T> {
+		public final AssetDescriptor<T> descriptor;
 		public T o;
-		private final AssetDescriptor<T> descriptor;
 
 		public ResHandle(final T object) {
 			descriptor = null;
@@ -86,7 +85,7 @@ public class ResPackage implements LoadedCallback, Disposable {
 
 	protected boolean loadStarted;
 	protected String name;
-	protected Ready onReady;
+	protected Runnable onReady;
 	protected ApplicationDelegate owner;
 	protected ResourcePackagePayloadParameter parameter = new ResourcePackagePayloadParameter(this);
 	protected boolean ready;
@@ -111,14 +110,10 @@ public class ResPackage implements LoadedCallback, Disposable {
 
 	@Override
 	public void finishedLoading(final AssetManager assetManager, final String fileName, final Class type) {
-		if (this.ready == true) throw new GdxRuntimeException("finishedLoading called multiply");
-		this.ready = true;
-		if (onReady != null) Gdx.app.postRunnable(new Runnable() {
-			@Override
-			public void run() {
-				onReady.onReady();
-			}
-		});
+		loadStarted = false;
+		if (ready == true) throw new GdxRuntimeException("finishedLoading called multiply");
+		ready = true;
+		if (onReady != null) Gdx.app.postRunnable(onReady);
 	}
 
 	public boolean isReady() {
@@ -135,9 +130,14 @@ public class ResPackage implements LoadedCallback, Disposable {
 		return this;
 	}
 
-	public Ready onReady(final Ready ready) {
+	public Runnable onReady(final Runnable ready) {
 		this.onReady = ready;
 		return ready;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "(" + this.name + ")";
 	}
 
 }

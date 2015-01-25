@@ -1,4 +1,4 @@
-package ca.informi.delegate;
+package ca.informi.gdx.delegate;
 
 import com.badlogic.gdx.graphics.Texture;
 

@@ -1,4 +1,4 @@
-package ca.informi.gdx;
+package ca.informi.gdx.delegate;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

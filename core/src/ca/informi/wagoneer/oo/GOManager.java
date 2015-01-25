@@ -1,6 +1,6 @@
 package ca.informi.wagoneer.oo;
 
-import ca.informi.delegate.IntervalTimer.Interval;
+import ca.informi.gdx.delegate.IntervalTimer.Interval;
 import ca.informi.wagoneer.oo.gameobject.Box2DObject;
 import ca.informi.wagoneer.oo.gameobject.GameObject;
 import ca.informi.wagoneer.oo.gameobject.Renderable;

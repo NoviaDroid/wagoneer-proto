@@ -1,6 +1,6 @@
 package ca.informi.gdx.graphics.g2d;
 
-import ca.informi.gdx.assets.loaders.Slicer;
+import ca.informi.gdx.assets.loaders.slicers.Slicer;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,7 +23,8 @@ public class ProceduralTextureAtlas extends TextureAtlas {
 
 	public ProceduralTextureAtlas(final ProceduralPage... pages) {
 		for (final ProceduralPage page : pages) {
-			page.slicer.slice(this, page.texture, page.pixmap);
+			page.slicer.setSliceParams(this, page.texture, page.pixmap);
+			page.slicer.slice();
 		}
 	}
 
