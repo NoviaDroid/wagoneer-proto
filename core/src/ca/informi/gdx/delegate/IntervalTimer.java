@@ -2,7 +2,7 @@ package ca.informi.gdx.delegate;
 
 import com.badlogic.gdx.utils.TimeUtils;
 
-public class IntervalTimer extends ApplicationDelegate {
+public class IntervalTimer {
 
 	public static class Interval {
 		public float absDt;
@@ -15,17 +15,6 @@ public class IntervalTimer extends ApplicationDelegate {
 	private long lastAbsTime;
 	private long lastRunTime;
 	private long timeBase;
-
-	@Override
-	public void added() {
-		timeBase = TimeUtils.nanoTime();
-		lastRunTime = lastAbsTime = timeBase;
-	}
-
-	@Override
-	public void dispose() {
-
-	}
 
 	public Interval getInterval() {
 		final long nanoTime = TimeUtils.nanoTime();
@@ -41,13 +30,20 @@ public class IntervalTimer extends ApplicationDelegate {
 		return interval;
 	}
 
-	@Override
 	public void pause() {
 		lastRunTime = -1;
 	}
 
-	@Override
-	public void removed() {
+	public void resume() {
+
+	}
+
+	public void start() {
+		timeBase = TimeUtils.nanoTime();
+		lastRunTime = lastAbsTime = timeBase;
+	}
+
+	public void stop() {
 		lastRunTime = -1;
 	}
 

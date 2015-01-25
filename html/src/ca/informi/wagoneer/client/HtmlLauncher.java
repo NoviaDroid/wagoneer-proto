@@ -10,7 +10,7 @@ public class HtmlLauncher extends GwtApplication {
 
 	@Override
 	public ApplicationListener getApplicationListener() {
-		return new Wagoneer().getApplicationListener();
+		return new Wagoneer();
 	}
 
 	@Override

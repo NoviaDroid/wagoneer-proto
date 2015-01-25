@@ -1,23 +1,20 @@
 package ca.informi.wagoneer.oo.gameobject;
 
-import ca.informi.gdx.delegate.controller.Controller;
-import ca.informi.wagoneer.oo.Game;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
-public abstract class GameObject implements Disposable {
+public abstract class GameObject extends GameAware implements Disposable {
 
 	public final int id;
 
 	public GameObject() {
-		id = Controller.instance.get(Game.class).objectRegistry.register(this);
+		id = game.objectRegistry.register(this);
 	}
 
 	@Override
 	public final void dispose() {
 		disposeInner();
-		Controller.instance.get(Game.class).objectRegistry.unregister(this);
+		game.objectRegistry.unregister(this);
 	}
 
 	public abstract float getAngle();

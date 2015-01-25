@@ -1,24 +1,19 @@
 package ca.informi.wagoneer.oo.gameobject;
 
-import ca.informi.gdx.delegate.controller.Controller;
-import ca.informi.wagoneer.oo.Game;
-import ca.informi.wagoneer.oo.RenderOptions;
+import ca.informi.wagoneer.Wagoneer;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class Box2DSpriteRenderer implements Renderable {
+public class Box2DSpriteRenderer extends SpriteRenderer {
 
 	private int layer;
 	private final Box2DObject parent;
-	private final Sprite sprite;
 
-	public Box2DSpriteRenderer(final Box2DObject parent, final String textureName, final int layer) {
+	public Box2DSpriteRenderer(final Wagoneer game, final Box2DObject parent, final String textureName) {
+		super(game.resources.oryxAtlas.o.createSprite("hauler_white"));
 		this.parent = parent;
-		final Game game = Controller.instance.get(Game.class);
-		sprite = game.resources.oryxAtlas.o.createSprite("hauler_white");
-		this.layer = layer;
+		this.layer = Layers.GAME_FOREGROUND;
 	}
 
 	@Override
@@ -31,16 +26,18 @@ public class Box2DSpriteRenderer implements Renderable {
 		return parent.isAlwaysVisible();
 	}
 
-	@Override
-	public void render(final RenderOptions opts) {
-		final Vector2 position = parent.getPosition();
-		final float angle = parent.getAngle();
-		sprite.setPosition(position.x, position.y);
-		sprite.setRotation(angle * MathUtils.radiansToDegrees);
-	}
-
 	public void setLayer(final int layer) {
 		this.layer = layer;
+	}
+
+	@Override
+	protected float getAngleDegrees() {
+		return parent.getAngle() * MathUtils.radiansToDegrees;
+	}
+
+	@Override
+	protected Vector2 getPosition() {
+		return parent.getPosition();
 	}
 
 }

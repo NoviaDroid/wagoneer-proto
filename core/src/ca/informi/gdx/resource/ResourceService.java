@@ -1,13 +1,13 @@
-package ca.informi.gdx.delegate;
+package ca.informi.gdx.resource;
 
 import ca.informi.gdx.assets.loaders.DFFontLoader;
 import ca.informi.gdx.assets.loaders.ProceduralTextureAtlasLoader;
 import ca.informi.gdx.assets.loaders.ShaderProgramLoader;
 import ca.informi.gdx.assets.loaders.resolvers.PrefixedAbsoluteFileHandleResolver;
-import ca.informi.gdx.delegate.ResPackage.ResourcePackagePayload;
-import ca.informi.gdx.delegate.ResPackage.ResourcePackagePayloadLoader;
 import ca.informi.gdx.graphics.g2d.DFFont;
 import ca.informi.gdx.graphics.g2d.ProceduralTextureAtlas;
+import ca.informi.gdx.resource.ResPackage.ResourcePackagePayload;
+import ca.informi.gdx.resource.ResPackage.ResourcePackagePayloadLoader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -17,9 +17,10 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class ResourceService extends ApplicationDelegate {
+public class ResourceService implements Disposable {
 
 	private final AssetManager assetManager;
 	private boolean disposed = false;
@@ -40,10 +41,6 @@ public class ResourceService extends ApplicationDelegate {
 		assetManager.setLoader(ResourcePackagePayload.class, new ResourcePackagePayloadLoader(resolver));
 		assetManager.setLoader(ShaderProgram.class, new ShaderProgramLoader(resolver));
 		assetManager.setLoader(ProceduralTextureAtlas.class, new ProceduralTextureAtlasLoader(resolver));
-	}
-
-	@Override
-	public void added() {
 	}
 
 	@Override
@@ -69,23 +66,17 @@ public class ResourceService extends ApplicationDelegate {
 		assetManager.load(resource, klass, parameters);
 	}
 
-	@Override
-	public void preUpdate() {
-		assetManager.update();
-	}
-
-	@Override
-	public void removed() {
-		assetManager.clear();
-	}
-
 	public void unload(final String name) {
 		if (disposed) return;
 
 		try {
 			assetManager.unload(name);
 		} catch (final GdxRuntimeException ex) {
-			Gdx.app.log("ResourceService", assetManager.getDiagnostics());
+			Gdx.app.error("ResourceService", assetManager.getDiagnostics(), ex);
 		}
+	}
+
+	public void update() {
+		assetManager.update();
 	}
 }

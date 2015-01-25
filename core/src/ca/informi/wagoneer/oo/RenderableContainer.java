@@ -6,6 +6,10 @@ public interface RenderableContainer {
 
 	void clear();
 
+	void dispose();
+
+	void init();
+
 	void put(int id, Renderable renderable);
 
 	void remove(int id);

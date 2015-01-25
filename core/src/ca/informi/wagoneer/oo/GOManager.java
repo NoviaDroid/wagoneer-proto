@@ -9,7 +9,7 @@ import ca.informi.wagoneer.oo.gameobject.Updatable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntMap;
 
-class GOManager implements Disposable {
+public class GOManager implements Disposable {
 	private final IntMap<Box2DObject> box2dObjects = new IntMap<Box2DObject>();
 	private final IntMap<GameObject> gameObjects = new IntMap<GameObject>();
 	private int nextId = 1;
@@ -21,8 +21,7 @@ class GOManager implements Disposable {
 		this.renderableContainer = renderableContainer;
 	}
 
-	@Override
-	public void dispose() {
+	public void clear() {
 		for (final GameObject go : gameObjects.values()) {
 			go.dispose();
 		}
@@ -32,18 +31,13 @@ class GOManager implements Disposable {
 		renderableContainer.clear();
 	}
 
-	public void update(final Interval interval) {
-		updateUpdatables(interval);
+	@Override
+	public void dispose() {
+		clear();
+		renderableContainer.dispose();
 	}
 
-	private void updateUpdatables(final Interval interval) {
-		for (int i = 0; i < updatables.size; ++i) {
-			final Updatable u = updatables.get(i);
-			u.update(interval);
-		}
-	}
-
-	int register(final GameObject gameObject) {
+	public int register(final GameObject gameObject) {
 		final int id = nextId++;
 		gameObjects.put(id, gameObject);
 		if (gameObject instanceof Box2DObject) {
@@ -59,12 +53,23 @@ class GOManager implements Disposable {
 		return id;
 	}
 
-	void remove(final GameObject go) {
+	public void remove(final GameObject go) {
 		gameObjects.remove(go.id);
 		box2dObjects.remove(go.id);
 		updatables.remove(go.id);
 		if (go instanceof Renderable) {
 			renderableContainer.remove(go.id);
+		}
+	}
+
+	public void update(final Interval interval) {
+		updateUpdatables(interval);
+	}
+
+	private void updateUpdatables(final Interval interval) {
+		for (int i = 0; i < updatables.size; ++i) {
+			final Updatable u = updatables.get(i);
+			u.update(interval);
 		}
 	}
 }

@@ -18,8 +18,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.IntMap.Values;
 
-class GORenderer implements RenderableContainer, Disposable {
-	private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
+public class GORenderer implements RenderableContainer, Disposable {
+	private Box2DDebugRenderer debugRenderer;
 	private final Comparator<Renderable> layerComparator = new Comparator<Renderable>() {
 		@Override
 		public int compare(final Renderable o1, final Renderable o2) {
@@ -59,6 +59,11 @@ class GORenderer implements RenderableContainer, Disposable {
 	}
 
 	@Override
+	public void init() {
+		debugRenderer = new Box2DDebugRenderer(true, true, true, true, true, true);
+	}
+
+	@Override
 	public void put(final int id, final Renderable renderable) {
 		renderables.put(id, renderable);
 		if (renderable.isAlwaysVisible()) {
@@ -74,7 +79,10 @@ class GORenderer implements RenderableContainer, Disposable {
 	}
 
 	public void render(final World world, final Camera camera, final RenderOptions renderOptions, final Array<Renderable> rq) {
+		renderOptions.batch.setProjectionMatrix(camera.combined);
+		renderOptions.batch.begin();
 		renderRQ(renderOptions, rq);
+		renderOptions.batch.end();
 		debugRenderer.render(world, camera.combined);
 	}
 

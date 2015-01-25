@@ -11,7 +11,7 @@ public class DesktopLauncher {
 		final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 720;
-		new LwjglApplication(new Wagoneer().getApplicationListener(), config);
+		new LwjglApplication(new Wagoneer(), config);
 	}
 
 }

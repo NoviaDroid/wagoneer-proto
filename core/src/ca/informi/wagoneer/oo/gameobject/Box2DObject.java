@@ -1,8 +1,5 @@
 package ca.informi.wagoneer.oo.gameobject;
 
-import ca.informi.gdx.delegate.controller.Controller;
-import ca.informi.wagoneer.oo.Game;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,7 +11,7 @@ public abstract class Box2DObject extends GameObject {
 	public final Body body;
 
 	public Box2DObject(final BodyDef bodyDef, final FixtureDef fixtureDef) {
-		final World world = Controller.instance.get(Game.class).world;
+		final World world = game.getWorld();
 		body = world.createBody(bodyDef);
 		body.createFixture(fixtureDef);
 		body.setUserData(this);
@@ -74,8 +71,8 @@ public abstract class Box2DObject extends GameObject {
 
 	@Override
 	protected void disposeInner() {
-		final World world = Controller.instance.get(Game.class).world;
-		world.destroyBody(body);
+		game.getWorld()
+			.destroyBody(body);
 	}
 
 }

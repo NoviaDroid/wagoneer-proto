@@ -1,9 +1,7 @@
-package ca.informi.gdx.delegate;
+package ca.informi.gdx.resource;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import ca.informi.gdx.delegate.controller.Controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -83,12 +81,16 @@ public class ResPackage implements LoadedCallback, Disposable {
 		}
 	}
 
+	private ResourceService resourceService;
 	protected boolean loadStarted;
 	protected String name;
 	protected Runnable onReady;
-	protected ApplicationDelegate owner;
 	protected ResourcePackagePayloadParameter parameter = new ResourcePackagePayloadParameter(this);
 	protected boolean ready;
+
+	public ResPackage(final String name) {
+		this.name = "package:" + name;
+	}
 
 	public <T> ResHandle<T> add(final String filename, final Class<T> klass) {
 		return add(filename, klass, null);
@@ -104,8 +106,7 @@ public class ResPackage implements LoadedCallback, Disposable {
 
 	@Override
 	public void dispose() {
-		final ResourceService resources = Controller.instance.get(ResourceService.class);
-		resources.unload(name);
+		if (resourceService != null) resourceService.unload(name);
 	}
 
 	@Override
@@ -120,13 +121,11 @@ public class ResPackage implements LoadedCallback, Disposable {
 		return ready;
 	}
 
-	public ResPackage load(final ApplicationDelegate delegate) {
+	public ResPackage load(final ResourceService resourceService) {
+		this.resourceService = resourceService;
 		if (loadStarted) { throw new GdxRuntimeException("Load multiply invoked on " + this); }
 		loadStarted = true;
-		owner = delegate;
-		this.name = "package:" + delegate.toString();
-		final ResourceService resources = Controller.instance.get(ResourceService.class);
-		resources.load(name, ResourcePackagePayload.class, parameter);
+		resourceService.load(name, ResourcePackagePayload.class, parameter);
 		return this;
 	}
 

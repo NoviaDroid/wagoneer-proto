@@ -11,6 +11,6 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		final AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new Wagoneer().getApplicationListener(), config);
+		initialize(new Wagoneer(), config);
 	}
 }
