@@ -18,6 +18,7 @@ import ca.informi.wagoneer.oo.gameobject.GameObject;
 import ca.informi.wagoneer.oo.gameobject.PlayerWagonHead;
 import ca.informi.wagoneer.oo.gameobject.Renderable;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -60,8 +61,7 @@ public class Wagoneer extends Game {
 
 		public Handle<GameObject> createPlayer() {
 			final Vector2 startingPosition = new Vector2();
-			startingPosition.set(random.nextFloat(), random.nextFloat())
-							.scl(gameSize);
+			startingPosition.set(random.nextFloat(), random.nextFloat()).scl(gameSize);
 			final float startingAngle = random.nextFloat() * MathUtils.PI * 2;
 			final PlayerWagonHead player = new PlayerWagonHead(startingPosition, startingAngle);
 			playerHandle = new Handle<GameObject>(player);
@@ -98,36 +98,43 @@ public class Wagoneer extends Game {
 	public Handle<GameObject> player;
 	public final GORenderer renderer = new GORenderer();
 	public final MyResourcePackage resources = new MyResourcePackage();
+	private final PlayerInputHandler input = new PlayerInputHandler();
 	private final GOManager objects = new GOManager(renderer);
 	private boolean paused;
 	private final ResourceService resourceService = new ResourceService();
 	private final IntervalTimer timer = new IntervalTimer();
 	protected GameLogic gameLogic;
 
+	public Wagoneer() {
+		instance = this;
+	}
+
 	@Override
 	public void create() {
-		instance = this;
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		I18NBundle.setSimpleFormatter(true);
-		resources.load(resourceService)
-					.onReady(new Runnable() {
-						@Override
-						public void run() {
-							renderer.init();
-							timer.start();
-							setScreen(new GamePlayScreen());
-							gameLogic = new GameLogic();
-							gameLogic.createWorld();
-							player = gameLogic.createPlayer();
-							gameLogic.startGame();
-						}
-					});
+		resources.load(resourceService).onReady(new Runnable() {
+			@Override
+			public void run() {
+				renderer.init();
+				timer.start();
+				setScreen(new GamePlayScreen());
+				gameLogic = new GameLogic();
+				gameLogic.createWorld();
+				player = gameLogic.createPlayer();
+				gameLogic.startGame();
+			}
+		});
 	}
 
 	@Override
 	public void dispose() {
-		resources.dispose();
-		player.dispose();
-		gameLogic.dispose();
+		if (resources != null)
+			resources.dispose();
+		if (player != null)
+			player.dispose();
+		if (gameLogic != null)
+			gameLogic.dispose();
 		super.dispose();
 	}
 
@@ -143,13 +150,8 @@ public class Wagoneer extends Game {
 
 	@Override
 	public void render() {
+		update();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		resourceService.update();
-		final Interval interval = timer.getInterval();
-		if (!paused && gameLogic != null && gameLogic.isStarted()) {
-			getWorld().step(interval.dt, 8, 3);
-			objects.update(interval);
-		}
 		super.render();
 	}
 
@@ -164,7 +166,21 @@ public class Wagoneer extends Game {
 	}
 
 	public void updateRQ(final OrthographicCamera camera, final Array<Renderable> rq) {
+		camera.update();
 		renderer.update(getWorld(), camera, rq);
+	}
+
+	private void update() {
+		final Interval interval = timer.getInterval();
+		resourceService.update();
+		if (!paused && gameLogic != null && gameLogic.isStarted()) {
+			if (player != null && player.object != null) {
+				input.update(interval, player.object);
+			}
+			Gdx.app.debug("Wagoneer", String.format("Player position: %s", player.object.getPosition()));
+			getWorld().step(interval.dt, 8, 3);
+			objects.update(interval);
+		}
 	}
 
 }

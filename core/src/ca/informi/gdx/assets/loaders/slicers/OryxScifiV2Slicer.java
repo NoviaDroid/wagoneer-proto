@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.StringBuilder;
 public class OryxScifiV2Slicer extends Slicer {
 
 	public OryxScifiV2Slicer() {
-		setTopDown(true);
+		invertY(false);
 	}
 
 	@Override
@@ -22,10 +22,8 @@ public class OryxScifiV2Slicer extends Slicer {
 			for (int rowIndex = 0; rowIndex < rows.length; ++rowIndex) {
 				final int x = baseX + columnIndex * stepX;
 				final int y = baseY + rowIndex * stepY;
-				final StringBuilder name = new StringBuilder().append(rows[rowIndex])
-																.append("_")
-																.append(columns[columnIndex]);
-				slice(name.toString(), x, y, width, height);
+				final String name = new StringBuilder().append(rows[rowIndex]).append("_").append(columns[columnIndex]).toString();
+				slice(name, x, y, width, height);
 			}
 		}
 	}

@@ -11,6 +11,10 @@ public abstract class GameObject extends GameAware implements Disposable {
 		id = game.objectRegistry.register(this);
 	}
 
+	public abstract void addOrientedForce(float f);
+
+	public abstract void addTorque(float f);
+
 	@Override
 	public final void dispose() {
 		disposeInner();

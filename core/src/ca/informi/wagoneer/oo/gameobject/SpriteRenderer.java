@@ -7,18 +7,24 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class SpriteRenderer implements Renderable {
 
+	protected final Vector2 centerOffset;
+	protected final Vector2 pos = new Vector2();
 	protected final Sprite sprite;
+	protected final Vector2 spriteSize;
 
-	public SpriteRenderer(final Sprite sprite) {
+	public SpriteRenderer(final Sprite sprite, final Vector2 drawSize) {
 		this.sprite = sprite;
+		spriteSize = new Vector2(this.sprite.getWidth(), this.sprite.getHeight());
+		centerOffset = new Vector2(spriteSize).scl(-0.5f);
+		this.sprite.setScale(drawSize.x / spriteSize.x, drawSize.y / spriteSize.y);
 	}
 
 	@Override
 	public void render(final RenderOptions opts) {
-		final Vector2 position = getPosition();
+		pos.set(getPosition()).add(centerOffset);
 		final float angle = getAngleDegrees();
-		sprite.setPosition(position.x, position.y);
 		sprite.setRotation(angle);
+		sprite.setPosition(pos.x, pos.y);
 		sprite.draw(opts.batch);
 	}
 

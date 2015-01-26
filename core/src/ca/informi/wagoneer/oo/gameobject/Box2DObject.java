@@ -9,14 +9,34 @@ import com.badlogic.gdx.physics.box2d.World;
 public abstract class Box2DObject extends GameObject {
 
 	public final Body body;
+	private final Vector2 force = new Vector2();
 
-	public Box2DObject(final BodyDef bodyDef, final FixtureDef fixtureDef) {
+	public Box2DObject(final BodyDef bodyDef, final FixtureDef[] fixtureDefs) {
 		final World world = game.getWorld();
 		body = world.createBody(bodyDef);
-		body.createFixture(fixtureDef);
+		for (FixtureDef fixtureDef : fixtureDefs) {
+			body.createFixture(fixtureDef);
+			fixtureDef.shape.dispose();
+		}
 		body.setUserData(this);
+	}
 
-		fixtureDef.shape.dispose();
+	@Override
+	public void addOrientedForce(float f) {
+		force.set(0.f, f);
+		force.rotateRad(getAngle());
+		body.applyForceToCenter(force, true);
+	}
+
+	public void addOrientedForce(Vector2 f) {
+		force.set(f);
+		force.rotateRad(getAngle());
+		body.applyForceToCenter(force, true);
+	}
+
+	@Override
+	public void addTorque(float f) {
+		body.applyTorque(f, true);
 	}
 
 	@Override
@@ -71,8 +91,7 @@ public abstract class Box2DObject extends GameObject {
 
 	@Override
 	protected void disposeInner() {
-		game.getWorld()
-			.destroyBody(body);
+		game.getWorld().destroyBody(body);
 	}
 
 }

@@ -19,7 +19,8 @@ public class GamePlayScreen implements Screen {
 		}
 	};
 	private final Array<Renderable> rq = new Array<Renderable>();
-	private final FitViewport viewport = new FitViewport(16.f, 9.f, camera);
+	private float scale = 0.5f;
+	private final FitViewport viewport = new FitViewport(16.f / scale, 9.f / scale, camera);
 
 	public GamePlayScreen() {
 		this.game = Wagoneer.instance;

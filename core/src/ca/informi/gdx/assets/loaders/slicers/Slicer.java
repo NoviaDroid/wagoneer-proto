@@ -11,9 +11,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public abstract class Slicer {
 
 	protected ProceduralTextureAtlas atlas;
+	protected boolean invertY;
 	protected Pixmap pixmap;
 	protected Texture texture;
-	protected boolean topDown;
 
 	public Slicer() {
 	}
@@ -26,16 +26,20 @@ public abstract class Slicer {
 
 	public abstract void slice();
 
-	protected void setTopDown(final boolean topDown) {
-		this.topDown = topDown;
+	protected void invertY(final boolean invertY) {
+		this.invertY = invertY;
 	}
 
 	protected void slice(final String name, final int x, int y, final int w, final int h) {
-		final TextureRegion r = new TextureRegion(texture);
-		if (topDown) {
+		if (invertY) {
 			y = pixmap.getHeight() - y;
 		}
+		Gdx.app.debug(getClass().getSimpleName(), String.format("Slice: %s: [%d,%d] [%dx%d]", name, x, y, w, h));
+		final TextureRegion r = new TextureRegion(texture, x, y, w, h);
 		r.setRegion(x, y, w, h);
+		if (invertY) {
+			r.flip(false, true);
+		}
 		final AtlasRegion s = atlas.findRegion(name);
 		if (s == null) {
 			atlas.addRegion(name, r);

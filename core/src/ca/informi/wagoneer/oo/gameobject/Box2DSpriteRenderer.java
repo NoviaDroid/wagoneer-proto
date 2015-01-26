@@ -2,6 +2,7 @@ package ca.informi.wagoneer.oo.gameobject;
 
 import ca.informi.wagoneer.Wagoneer;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -10,8 +11,8 @@ public class Box2DSpriteRenderer extends SpriteRenderer {
 	private int layer;
 	private final Box2DObject parent;
 
-	public Box2DSpriteRenderer(final Wagoneer game, final Box2DObject parent, final String textureName) {
-		super(game.resources.oryxAtlas.o.createSprite("hauler_white"));
+	public Box2DSpriteRenderer(final Wagoneer game, final Box2DObject parent, final Sprite sprite, Vector2 size) {
+		super(sprite, size);
 		this.parent = parent;
 		this.layer = Layers.GAME_FOREGROUND;
 	}
