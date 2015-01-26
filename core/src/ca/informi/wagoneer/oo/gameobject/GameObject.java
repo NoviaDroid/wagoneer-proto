@@ -11,31 +11,21 @@ public abstract class GameObject extends GameAware implements Disposable {
 		id = game.objectRegistry.register(this);
 	}
 
-	public abstract void addOrientedForce(float f);
-
-	public abstract void addTorque(float f);
-
 	@Override
 	public final void dispose() {
 		disposeInner();
 		game.objectRegistry.unregister(this);
 	}
 
-	public abstract float getAngle();
-
-	public abstract float getAngularVelocity();
+	public abstract float getAngleRadians();
 
 	public abstract Vector2 getPosition();
 
-	public abstract Vector2 getVelocity();
+	public abstract boolean isAlwaysVisible();
 
-	public abstract void setAngle(float angle);
-
-	public abstract void setAngularVelocity(float avel);
+	public abstract void setAngleRadians(float angle);
 
 	public abstract void setPosition(Vector2 position);
-
-	public abstract void setVelocity(Vector2 velocity);
 
 	protected abstract void disposeInner();
 

@@ -6,15 +6,16 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
-public abstract class Box2DObject extends GameObject {
+public abstract class Box2DObject extends PhysicsObject {
 
 	public final Body body;
 	private final Vector2 force = new Vector2();
 
-	public Box2DObject(final BodyDef bodyDef, final FixtureDef[] fixtureDefs) {
+	public Box2DObject(final Vector2 size, final Vector2 position, final float angle) {
 		final World world = game.getWorld();
-		body = world.createBody(bodyDef);
-		for (FixtureDef fixtureDef : fixtureDefs) {
+		body = world.createBody(getBodyDef(position, angle));
+		final FixtureDef[] fixtureDefs = getFixtureDefs(size);
+		for (final FixtureDef fixtureDef : fixtureDefs) {
 			body.createFixture(fixtureDef);
 			fixtureDef.shape.dispose();
 		}
@@ -22,25 +23,25 @@ public abstract class Box2DObject extends GameObject {
 	}
 
 	@Override
-	public void addOrientedForce(float f) {
+	public void addOrientedForce(final float f) {
 		force.set(0.f, f);
-		force.rotateRad(getAngle());
+		force.rotateRad(getAngleRadians());
 		body.applyForceToCenter(force, true);
 	}
 
-	public void addOrientedForce(Vector2 f) {
+	public void addOrientedForce(final Vector2 f) {
 		force.set(f);
-		force.rotateRad(getAngle());
+		force.rotateRad(getAngleRadians());
 		body.applyForceToCenter(force, true);
 	}
 
 	@Override
-	public void addTorque(float f) {
+	public void addTorque(final float f) {
 		body.applyTorque(f, true);
 	}
 
 	@Override
-	public float getAngle() {
+	public float getAngleRadians() {
 		return body.getAngle();
 	}
 
@@ -65,12 +66,13 @@ public abstract class Box2DObject extends GameObject {
 	 *
 	 * @return
 	 */
+	@Override
 	public boolean isAlwaysVisible() {
 		return false;
 	}
 
 	@Override
-	public void setAngle(final float angle) {
+	public void setAngleRadians(final float angle) {
 		body.setTransform(body.getPosition(), angle);
 	}
 
@@ -91,7 +93,12 @@ public abstract class Box2DObject extends GameObject {
 
 	@Override
 	protected void disposeInner() {
-		game.getWorld().destroyBody(body);
+		game.getWorld()
+			.destroyBody(body);
 	}
+
+	protected abstract BodyDef getBodyDef(final Vector2 position, float angle);
+
+	protected abstract FixtureDef[] getFixtureDefs(final Vector2 size);
 
 }

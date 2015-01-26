@@ -14,15 +14,17 @@ import ca.informi.wagoneer.oo.GOManager;
 import ca.informi.wagoneer.oo.GORenderer;
 import ca.informi.wagoneer.oo.Handle;
 import ca.informi.wagoneer.oo.RenderOptions;
+import ca.informi.wagoneer.oo.gameobject.EngineWagonObject;
 import ca.informi.wagoneer.oo.gameobject.GameObject;
-import ca.informi.wagoneer.oo.gameobject.PlayerWagonHead;
+import ca.informi.wagoneer.oo.gameobject.LifeboatWagonObject;
 import ca.informi.wagoneer.oo.gameobject.Renderable;
+import ca.informi.wagoneer.oo.gameobject.WagonObject;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -33,6 +35,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 public class Wagoneer extends Game {
 
 	public class MyResourcePackage extends ResPackage {
+		public final ResHandle<ParticleEffect> engineEffect = add("image/engine.p", ParticleEffect.class);
 		public final ResHandle<ProceduralTextureAtlas> oryxAtlas = add("image/oryx.atlas", ProceduralTextureAtlas.class,
 				new ProceduralTextureAtlasParameter(new ProceduralPage("image/lofi_scifi_v2_trans.png", new OryxScifiV2Slicer())));
 
@@ -53,23 +56,21 @@ public class Wagoneer extends Game {
 
 	private class GameLogic implements Disposable {
 
-		private final Vector2 gameSize = new Vector2(1, 1);
+		private final Vector2 gameSize = new Vector2(10, 10);
 		private boolean isStarted;
 		private Handle<GameObject> playerHandle;
 		private final Random random = new Random();
 		private World world;
 
 		public Handle<GameObject> createPlayer() {
-			final Vector2 startingPosition = new Vector2();
-			startingPosition.set(random.nextFloat(), random.nextFloat()).scl(gameSize);
-			final float startingAngle = random.nextFloat() * MathUtils.PI * 2;
-			final PlayerWagonHead player = new PlayerWagonHead(startingPosition, startingAngle);
-			playerHandle = new Handle<GameObject>(player);
+			playerHandle = new Handle<GameObject>(new LifeboatWagonObject(randomVec2(null), randomAngle()));
 			return playerHandle;
 		}
 
 		public void createWorld() {
 			world = new World(new Vector2(), true);
+			new EngineWagonObject(randomVec2(null), randomAngle());
+			new EngineWagonObject(randomVec2(null), randomAngle());
 		}
 
 		@Override
@@ -91,6 +92,16 @@ public class Wagoneer extends Game {
 			isStarted = true;
 		}
 
+		private float randomAngle() {
+			return random.nextFloat() * MathUtils.PI * 2;
+		}
+
+		private Vector2 randomVec2(Vector2 v) {
+			if (v == null) v = new Vector2();
+			return v.set(random.nextFloat(), random.nextFloat())
+					.scl(gameSize);
+		}
+
 	}
 
 	public static Wagoneer instance;
@@ -98,10 +109,10 @@ public class Wagoneer extends Game {
 	public Handle<GameObject> player;
 	public final GORenderer renderer = new GORenderer();
 	public final MyResourcePackage resources = new MyResourcePackage();
+	public final ResourceService resourceService = new ResourceService();
 	private final PlayerInputHandler input = new PlayerInputHandler();
 	private final GOManager objects = new GOManager(renderer);
 	private boolean paused;
-	private final ResourceService resourceService = new ResourceService();
 	private final IntervalTimer timer = new IntervalTimer();
 	protected GameLogic gameLogic;
 
@@ -113,28 +124,26 @@ public class Wagoneer extends Game {
 	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		I18NBundle.setSimpleFormatter(true);
-		resources.load(resourceService).onReady(new Runnable() {
-			@Override
-			public void run() {
-				renderer.init();
-				timer.start();
-				setScreen(new GamePlayScreen());
-				gameLogic = new GameLogic();
-				gameLogic.createWorld();
-				player = gameLogic.createPlayer();
-				gameLogic.startGame();
-			}
-		});
+		resources.load()
+					.onReady(new Runnable() {
+						@Override
+						public void run() {
+							renderer.init();
+							timer.start();
+							new GamePlayScreen();
+							gameLogic = new GameLogic();
+							gameLogic.createWorld();
+							player = gameLogic.createPlayer();
+							gameLogic.startGame();
+						}
+					});
 	}
 
 	@Override
 	public void dispose() {
-		if (resources != null)
-			resources.dispose();
-		if (player != null)
-			player.dispose();
-		if (gameLogic != null)
-			gameLogic.dispose();
+		if (resources != null) resources.dispose();
+		if (player != null) player.dispose();
+		if (gameLogic != null) gameLogic.dispose();
 		super.dispose();
 	}
 
@@ -155,8 +164,8 @@ public class Wagoneer extends Game {
 		super.render();
 	}
 
-	public void renderRQ(final OrthographicCamera camera, final Array<Renderable> rq, final RenderOptions renderOptions) {
-		renderer.render(getWorld(), camera, renderOptions, rq);
+	public void renderRQ(final RenderOptions renderOptions, final Array<Renderable> rq) {
+		renderer.render(getWorld(), renderOptions, rq);
 	}
 
 	@Override
@@ -165,19 +174,20 @@ public class Wagoneer extends Game {
 		super.resume();
 	}
 
-	public void updateRQ(final OrthographicCamera camera, final Array<Renderable> rq) {
-		camera.update();
-		renderer.update(getWorld(), camera, rq);
+	public void updateRQ(final RenderOptions opts, final Array<Renderable> rq) {
+		opts.camera.update();
+		renderer.update(getWorld(), opts, rq);
 	}
 
 	private void update() {
 		final Interval interval = timer.getInterval();
 		resourceService.update();
 		if (!paused && gameLogic != null && gameLogic.isStarted()) {
-			if (player != null && player.object != null) {
-				input.update(interval, player.object);
+			if (player != null && player.object != null && player.object instanceof WagonObject) {
+				input.update(interval, (WagonObject) player.object);
 			}
-			Gdx.app.debug("Wagoneer", String.format("Player position: %s", player.object.getPosition()));
+			// Gdx.app.debug("Wagoneer", String.format("Player position: %s",
+			// player.object.getPosition()));
 			getWorld().step(interval.dt, 8, 3);
 			objects.update(interval);
 		}

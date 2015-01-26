@@ -8,6 +8,7 @@ import ca.informi.wagoneer.oo.gameobject.Updatable;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntMap.Values;
 
 public class GOManager implements Disposable {
 	private final IntMap<Box2DObject> box2dObjects = new IntMap<Box2DObject>();
@@ -67,8 +68,8 @@ public class GOManager implements Disposable {
 	}
 
 	private void updateUpdatables(final Interval interval) {
-		for (int i = 0; i < updatables.size; ++i) {
-			final Updatable u = updatables.get(i);
+		final Values<Updatable> values = updatables.values();
+		for (final Updatable u : values) {
 			u.update(interval);
 		}
 	}

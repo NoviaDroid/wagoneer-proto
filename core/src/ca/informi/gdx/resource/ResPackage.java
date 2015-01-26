@@ -3,6 +3,9 @@ package ca.informi.gdx.resource;
 import java.util.HashSet;
 import java.util.Set;
 
+import ca.informi.wagoneer.Wagoneer;
+import ca.informi.wagoneer.oo.Handle;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -21,16 +24,16 @@ public class ResPackage implements LoadedCallback, Disposable {
 		void onReady();
 	}
 
-	public static class ResHandle<T> {
+	public static class ResHandle<T> extends Handle<T> {
 		public final AssetDescriptor<T> descriptor;
-		public T o;
 
 		public ResHandle(final T object) {
+			super(object);
 			descriptor = null;
-			o = object;
 		}
 
 		ResHandle(final AssetDescriptor<T> descriptor) {
+			super(null);
 			this.descriptor = descriptor;
 		}
 	}
@@ -66,7 +69,7 @@ public class ResPackage implements LoadedCallback, Disposable {
 		public ResourcePackagePayload load(final AssetManager assetManager, final String fileName, final FileHandle file,
 				final ResourcePackagePayloadParameter parameter) {
 			for (final ResHandle<Object> handle : parameter.dependencies) {
-				handle.o = assetManager.get(handle.descriptor);
+				handle.object = assetManager.get(handle.descriptor);
 			}
 			return new ResourcePackagePayload(parameter.dependencies);
 		}
@@ -121,11 +124,10 @@ public class ResPackage implements LoadedCallback, Disposable {
 		return ready;
 	}
 
-	public ResPackage load(final ResourceService resourceService) {
-		this.resourceService = resourceService;
+	public ResPackage load() {
 		if (loadStarted) { throw new GdxRuntimeException("Load multiply invoked on " + this); }
 		loadStarted = true;
-		resourceService.load(name, ResourcePackagePayload.class, parameter);
+		Wagoneer.instance.resourceService.load(name, ResourcePackagePayload.class, parameter);
 		return this;
 	}
 

@@ -5,7 +5,6 @@ import java.util.Comparator;
 import ca.informi.wagoneer.oo.gameobject.GameObject;
 import ca.informi.wagoneer.oo.gameobject.Renderable;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -78,17 +77,17 @@ public class GORenderer implements RenderableContainer, Disposable {
 		visibleAlways.remove(id);
 	}
 
-	public void render(final World world, final Camera camera, final RenderOptions renderOptions, final Array<Renderable> rq) {
-		renderOptions.batch.setProjectionMatrix(camera.combined);
+	public void render(final World world, final RenderOptions renderOptions, final Array<Renderable> rq) {
+		renderOptions.batch.setProjectionMatrix(renderOptions.camera.combined);
 		renderOptions.batch.begin();
 		renderRQ(renderOptions, rq);
 		renderOptions.batch.end();
-		debugRenderer.render(world, camera.combined);
+		debugRenderer.render(world, renderOptions.camera.combined);
 	}
 
-	public void update(final World world, final OrthographicCamera camera, final Array<Renderable> rq) {
+	public void update(final World world, final RenderOptions renderOptions, final Array<Renderable> rq) {
 		rq.clear();
-		updateCalculateVisibles(world, camera);
+		updateCalculateVisibles(world, renderOptions.camera);
 		updateBuildRQ(rq);
 	}
 
