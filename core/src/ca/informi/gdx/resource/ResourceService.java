@@ -3,7 +3,6 @@ package ca.informi.gdx.resource;
 import ca.informi.gdx.assets.loaders.DFFontLoader;
 import ca.informi.gdx.assets.loaders.ProceduralTextureAtlasLoader;
 import ca.informi.gdx.assets.loaders.ShaderProgramLoader;
-import ca.informi.gdx.assets.loaders.resolvers.PrefixedAbsoluteFileHandleResolver;
 import ca.informi.gdx.graphics.g2d.DFFont;
 import ca.informi.gdx.graphics.g2d.ProceduralTextureAtlas;
 import ca.informi.gdx.resource.ResPackage.ResourcePackagePayload;
@@ -14,7 +13,6 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Disposable;
@@ -26,16 +24,8 @@ public class ResourceService implements Disposable {
 	private boolean disposed = false;
 	private final FileHandleResolver resolver;
 
-	public ResourceService() {
-		final String assetBase = System.getProperty("assetBase");
-		if (assetBase != null) {
-			resolver = new PrefixedAbsoluteFileHandleResolver(assetBase);
-			// resolver = new ChainedFileHandleResolver(new
-			// PrefixedAbsoluteFileHandleResolver(loadExternal),
-			// new InternalFileHandleResolver());
-		} else {
-			resolver = new InternalFileHandleResolver();
-		}
+	public ResourceService(final FileHandleResolver resolver) {
+		this.resolver = resolver;
 		assetManager = new AssetManager(resolver);
 		assetManager.setLoader(DFFont.class, new DFFontLoader(resolver));
 		assetManager.setLoader(ResourcePackagePayload.class, new ResourcePackagePayloadLoader(resolver));

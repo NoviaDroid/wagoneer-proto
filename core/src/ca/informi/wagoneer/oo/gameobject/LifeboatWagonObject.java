@@ -2,6 +2,7 @@ package ca.informi.wagoneer.oo.gameobject;
 
 import ca.informi.gdx.delegate.IntervalTimer.Interval;
 import ca.informi.wagoneer.Wagoneer;
+import ca.informi.wagoneer.oo.RenderOptions;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -10,11 +11,14 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 public class LifeboatWagonObject extends WagonObject {
 
 	private static Vector2 size = new Vector2(2, 2);
-	private static final float THRUST = 1.f; // m / s^2
+	private static final float THRUST = 5.f; // m / s^2
 	private static final float TORQUE = 10.f; // rad / s^2
 
+	private final ParticleRenderer engineEffectRenderer = new ParticleRenderer(this, new Vector2(0, -1.1f),
+			Wagoneer.instance.resources.engineEffect.object, 0.5f, false);
 	private boolean thrust;
 	private boolean torqueLeft;
+
 	private boolean torqueRight;
 
 	public LifeboatWagonObject(final Vector2 position, final float angle) {
@@ -37,6 +41,13 @@ public class LifeboatWagonObject extends WagonObject {
 				handleThrust(message);
 			}
 		});
+		engineEffectRenderer.setOrientedVelocity(-5.5f, 10.f);
+	}
+
+	@Override
+	public void render(final RenderOptions opts) {
+		engineEffectRenderer.render(opts);
+		super.render(opts);
 	}
 
 	@Override
@@ -49,8 +60,12 @@ public class LifeboatWagonObject extends WagonObject {
 			addTorque(-TORQUE);
 		}
 		if (thrust && !connections.hasConnection(WagonConnections.AFT)) {
+			engineEffectRenderer.setEmitting(true);
 			addOrientedForce(THRUST);
+		} else {
+			engineEffectRenderer.setEmitting(false);
 		}
+		engineEffectRenderer.update(interval);
 	}
 
 	@Override
@@ -59,16 +74,22 @@ public class LifeboatWagonObject extends WagonObject {
 	}
 
 	@Override
-	protected FixtureDef[] getFixtureDefs(final Vector2 size) {
+	protected FixtureDef createBodyFixture(final Vector2 size) {
 		final FixtureDef body = new FixtureDef();
 		body.friction = 0.2f;
 		body.restitution = 0.8f;
 		body.density = 1.0f;
+
 		final CircleShape bodyShape = new CircleShape();
 		bodyShape.setRadius(size.x / 2.f);
 		body.shape = bodyShape;
+		return body;
+	}
 
-		return new FixtureDef[] { body };
+	@Override
+	protected void disposeInner() {
+		super.disposeInner();
+		engineEffectRenderer.dispose();
 	}
 
 	protected void handleRotateLeft(final WagonMessage message) {

@@ -40,7 +40,7 @@ public abstract class Slicer {
 		if (invertCoordinates) {
 			y = pixmap.getHeight() - y;
 		}
-		Gdx.app.debug(getClass().getSimpleName(), String.format("Slice: %s: [%d,%d] [%dx%d]", name, x, y, w, h));
+		Gdx.app.debug(getClass().getSimpleName(), "Slice: " + name + ":" + x + "," + y + "/" + w + "," + h);
 		final TextureRegion r = new TextureRegion(texture, x, invertTexture != invertCoordinates ? y - h : h, w, h);
 		if (invertTexture) {
 			r.flip(false, true);

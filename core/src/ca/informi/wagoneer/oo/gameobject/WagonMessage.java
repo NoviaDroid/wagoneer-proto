@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 public class WagonMessage implements Poolable {
 
 	public static abstract class WagonMessageData<T> {
-		@Override
 		public abstract T clone();
 	}
 

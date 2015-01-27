@@ -2,10 +2,11 @@ package ca.informi.wagoneer.oo.gameobject;
 
 import ca.informi.wagoneer.Wagoneer;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
-import com.badlogic.gdx.physics.box2d.JointDef;
-import com.badlogic.gdx.physics.box2d.JointDef.JointType;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.badlogic.gdx.utils.Disposable;
 
 public class WagonConnections implements Disposable {
@@ -28,6 +29,11 @@ public class WagonConnections implements Disposable {
 	private static final Vector2 GAP_VECTOR = new Vector2(GAP_SCALAR, GAP_SCALAR);
 	private static Vector2[] offsets = { new Vector2(0, 1), new Vector2(0, -1), new Vector2(-1, 0), new Vector2(1, 0) };
 	private static int[] Z_COMPLEMENT = { AFT, FORE, RIGHT, LEFT };
+
+	public static Vector2 getHitchOffset(final int i, final Vector2 size) {
+		return new Vector2(size).scl(GAP_VECTOR)
+								.scl(offsets[i]);
+	}
 
 	public WagonConnection[] connections = new WagonConnection[] { //
 	new WagonConnection(0, 1), // fore
@@ -101,11 +107,12 @@ public class WagonConnections implements Disposable {
 
 		objB.setAngleRadians(objA.getAngleRadians());
 
-		final JointDef def = new JointDef();
+		final WeldJointDef def = new WeldJointDef();
 		def.bodyA = objA.body;
 		def.bodyB = objB.body;
+		def.localAnchorA.set(WagonConnections.getHitchOffset(aToBOffsetIndex, objA.getSize()));
+		def.localAnchorB.set(WagonConnections.getHitchOffset(Z_COMPLEMENT[aToBOffsetIndex], objB.getSize()));
 		def.collideConnected = false;
-		def.type = JointType.WeldJoint;
 		final Joint joint = Wagoneer.instance.getWorld()
 												.createJoint(def);
 		return joint;
@@ -127,11 +134,14 @@ public class WagonConnections implements Disposable {
 		// Move B into place
 		objB.setPosition(v);
 
-		final JointDef def = new JointDef();
+		final RevoluteJointDef def = new RevoluteJointDef();
 		def.bodyA = objA.body;
 		def.bodyB = objB.body;
+		def.lowerAngle = 0.5f * MathUtils.PI;
+		def.upperAngle = (3.f / 2.f) * MathUtils.PI;
+		def.localAnchorA.set(WagonConnections.getHitchOffset(aToBOffsetIndex, objA.getSize()));
+		def.localAnchorB.set(WagonConnections.getHitchOffset(Z_COMPLEMENT[aToBOffsetIndex], objB.getSize()));
 		def.collideConnected = true; // Prevent from rotating through each other
-		def.type = JointType.RevoluteJoint;
 		final Joint joint = Wagoneer.instance.getWorld()
 												.createJoint(def);
 

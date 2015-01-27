@@ -41,7 +41,7 @@ public class SpriteAnimation implements Updatable {
 
 	public SpriteAnimation(final Array<Sprite> animation, final Array<Vector2> frameOffsets, final float frameTime) {
 		this.frameTime = frameTime;
-		this.animation = new Array<SpriteAnimationFrame>(true, animation.size, SpriteAnimationFrame.class);
+		this.animation = new Array<SpriteAnimationFrame>(animation.size);
 		for (int i = 0; i < animation.size; ++i) {
 			this.animation.add(new SpriteAnimationFrame(animation.get(i), frameOffsets.get(i)));
 		}
@@ -49,7 +49,7 @@ public class SpriteAnimation implements Updatable {
 
 	public SpriteAnimation(final Array<Sprite> animation, final float frameTime) {
 		this.frameTime = frameTime;
-		this.animation = new Array<SpriteAnimationFrame>(true, animation.size, SpriteAnimationFrame.class);
+		this.animation = new Array<SpriteAnimationFrame>(animation.size);
 		for (int i = 0; i < animation.size; ++i) {
 			this.animation.add(new SpriteAnimationFrame(animation.get(i)));
 		}

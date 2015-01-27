@@ -23,6 +23,7 @@ import ca.informi.wagoneer.oo.gameobject.WagonObject;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.MathUtils;
@@ -69,6 +70,7 @@ public class Wagoneer extends Game {
 
 		public void createWorld() {
 			world = new World(new Vector2(), true);
+			world.setContactListener(new DelegatingContactListener());
 			new EngineWagonObject(randomVec2(null), randomAngle());
 			new EngineWagonObject(randomVec2(null), randomAngle());
 		}
@@ -109,14 +111,15 @@ public class Wagoneer extends Game {
 	public Handle<GameObject> player;
 	public final GORenderer renderer = new GORenderer();
 	public final MyResourcePackage resources = new MyResourcePackage();
-	public final ResourceService resourceService = new ResourceService();
+	public final ResourceService resourceService;
 	private final PlayerInputHandler input = new PlayerInputHandler();
 	private final GOManager objects = new GOManager(renderer);
 	private boolean paused;
 	private final IntervalTimer timer = new IntervalTimer();
 	protected GameLogic gameLogic;
 
-	public Wagoneer() {
+	public Wagoneer(final FileHandleResolver resolver) {
+		resourceService = new ResourceService(resolver);
 		instance = this;
 	}
 

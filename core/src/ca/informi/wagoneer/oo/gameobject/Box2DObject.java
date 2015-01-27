@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 public abstract class Box2DObject extends PhysicsObject {
 
@@ -14,7 +15,7 @@ public abstract class Box2DObject extends PhysicsObject {
 	public Box2DObject(final Vector2 size, final Vector2 position, final float angle) {
 		final World world = game.getWorld();
 		body = world.createBody(getBodyDef(position, angle));
-		final FixtureDef[] fixtureDefs = getFixtureDefs(size);
+		final Array<FixtureDef> fixtureDefs = getFixtureDefs(size);
 		for (final FixtureDef fixtureDef : fixtureDefs) {
 			body.createFixture(fixtureDef);
 			fixtureDef.shape.dispose();
@@ -99,6 +100,6 @@ public abstract class Box2DObject extends PhysicsObject {
 
 	protected abstract BodyDef getBodyDef(final Vector2 position, float angle);
 
-	protected abstract FixtureDef[] getFixtureDefs(final Vector2 size);
+	protected abstract Array<FixtureDef> getFixtureDefs(final Vector2 size);
 
 }
