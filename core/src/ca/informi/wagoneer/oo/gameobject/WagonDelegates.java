@@ -39,7 +39,7 @@ public class WagonDelegates implements Disposable {
 		final Array<WagonDelegate> arrayAll = delegateForType.get(WagonMessageType.ALL);
 		if (arrayAll != null) {
 			for (int i = 0; i < arrayAll.size; ++i) {
-				final WagonDelegate delegate = array.get(i);
+				final WagonDelegate delegate = arrayAll.get(i);
 				delegate.handle(message);
 				handled = true;
 			}

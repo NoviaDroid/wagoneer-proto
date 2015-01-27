@@ -21,13 +21,14 @@ public class ParticleRenderer implements Updatable, Renderable, Disposable {
 	protected float orientedVelocity;
 	protected final GameObject parent;
 	protected Vector2 position = new Vector2();
+	private float lastScale = 1.f;
 
 	public ParticleRenderer(final GameObject parent, final Vector2 offset, final ParticleEffect effectProto, final float scale,
 			final boolean physics) {
 		this.parent = parent;
 		this.offset = new Vector2(offset);
 		this.effect = physics ? new ParticleEffectBox2D(Wagoneer.instance.getWorld(), effectProto) : new ParticleEffect(effectProto);
-		this.effect.scaleEffect(scale);
+		setScale(scale);
 	}
 
 	@Override
@@ -64,15 +65,22 @@ public class ParticleRenderer implements Updatable, Renderable, Disposable {
 		}
 	}
 
-	public void setOrientedVelocity(final float f, final float varianceDegrees) {
+	public void setFountainSpeedCone(final float f, final float varianceDegrees) {
 		orientedVelocity = f;
 		orientedVelocityVariance = varianceDegrees;
 		orientedVelocityEnabled = true;
 		updateOrientedVelocityAmount();
 	}
 
-	public void setOrientedVelocityEnabled(final boolean enabled) {
+	public void setFountain(final boolean enabled) {
 		orientedVelocityEnabled = enabled;
+	}
+
+	public void setScale(final float scale) {
+		final float effectiveScale = scale / lastScale;
+		if (effectiveScale == 1.f) { return; }
+		effect.scaleEffect(effectiveScale);
+		lastScale = scale;
 	}
 
 	@Override

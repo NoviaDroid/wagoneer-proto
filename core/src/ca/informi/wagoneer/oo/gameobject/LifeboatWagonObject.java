@@ -7,6 +7,7 @@ import ca.informi.wagoneer.oo.RenderOptions;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Array;
 
 public class LifeboatWagonObject extends WagonObject {
 
@@ -16,9 +17,9 @@ public class LifeboatWagonObject extends WagonObject {
 
 	private final ParticleRenderer engineEffectRenderer = new ParticleRenderer(this, new Vector2(0, -1.1f),
 			Wagoneer.instance.resources.engineEffect.object, 0.5f, false);
+
 	private boolean thrust;
 	private boolean torqueLeft;
-
 	private boolean torqueRight;
 
 	public LifeboatWagonObject(final Vector2 position, final float angle) {
@@ -41,7 +42,7 @@ public class LifeboatWagonObject extends WagonObject {
 				handleThrust(message);
 			}
 		});
-		engineEffectRenderer.setOrientedVelocity(-5.5f, 10.f);
+		engineEffectRenderer.setFountainSpeedCone(-5.5f, 10.f);
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class LifeboatWagonObject extends WagonObject {
 		if (torqueRight) {
 			addTorque(-TORQUE);
 		}
-		if (thrust && !connections.hasConnection(WagonConnections.AFT)) {
+		if (thrust && !hitches.isHitched(WagonHitch.AFT)) {
 			engineEffectRenderer.setEmitting(true);
 			addOrientedForce(THRUST);
 		} else {
@@ -74,7 +75,7 @@ public class LifeboatWagonObject extends WagonObject {
 	}
 
 	@Override
-	protected FixtureDef createBodyFixture(final Vector2 size) {
+	protected void createBodyFixtures(final Array<FixtureDef> fd, final Vector2 size) {
 		final FixtureDef body = new FixtureDef();
 		body.friction = 0.2f;
 		body.restitution = 0.8f;
@@ -83,7 +84,8 @@ public class LifeboatWagonObject extends WagonObject {
 		final CircleShape bodyShape = new CircleShape();
 		bodyShape.setRadius(size.x / 2.f);
 		body.shape = bodyShape;
-		return body;
+
+		fd.add(body);
 	}
 
 	@Override
@@ -106,7 +108,7 @@ public class LifeboatWagonObject extends WagonObject {
 
 	@Override
 	protected boolean willAcceptConnection(final int direction) {
-		return (direction != FORE);
+		return (direction != WagonHitch.FORE);
 	}
 
 }

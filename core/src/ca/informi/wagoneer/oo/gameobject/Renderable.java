@@ -2,7 +2,11 @@ package ca.informi.wagoneer.oo.gameobject;
 
 import ca.informi.wagoneer.oo.RenderOptions;
 
-public interface Renderable {
+import com.badlogic.gdx.utils.Disposable;
+
+public interface Renderable extends Disposable {
+
+	public abstract void dispose();
 
 	public abstract int getLayer();
 

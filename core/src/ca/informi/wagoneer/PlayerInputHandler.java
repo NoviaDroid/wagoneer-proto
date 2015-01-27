@@ -12,13 +12,13 @@ public class PlayerInputHandler {
 	public void update(final Interval interval, final WagonObject object) {
 		final float dt = interval.dt;
 		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-			object.sendMessge(WagonMessageType.CONTROL_ROTATE_LEFT, null);
+			object.sendMessage(WagonMessageType.CONTROL_ROTATE_LEFT, null);
 		}
 		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			object.sendMessge(WagonMessageType.CONTROL_ROTATE_RIGHT, null);
+			object.sendMessage(WagonMessageType.CONTROL_ROTATE_RIGHT, null);
 		}
 		if (Gdx.input.isKeyPressed(Keys.UP)) {
-			object.sendMessge(WagonMessageType.CONTROL_THRUST, null);
+			object.sendMessage(WagonMessageType.CONTROL_THRUST, null);
 		}
 	}
 

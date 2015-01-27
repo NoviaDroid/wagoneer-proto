@@ -95,7 +95,7 @@ public class Wagoneer extends Game {
 		}
 
 		private float randomAngle() {
-			return random.nextFloat() * MathUtils.PI * 2;
+			return random.nextFloat() * MathUtils.PI2;
 		}
 
 		private Vector2 randomVec2(Vector2 v) {
@@ -108,15 +108,18 @@ public class Wagoneer extends Game {
 
 	public static Wagoneer instance;
 	public final ObjectRegistry objectRegistry = new ObjectRegistry();
-	public Handle<GameObject> player;
 	public final GORenderer renderer = new GORenderer();
 	public final MyResourcePackage resources = new MyResourcePackage();
 	public final ResourceService resourceService;
+
+	public Handle<GameObject> player;
+
 	private final PlayerInputHandler input = new PlayerInputHandler();
 	private final GOManager objects = new GOManager(renderer);
-	private boolean paused;
 	private final IntervalTimer timer = new IntervalTimer();
 	protected GameLogic gameLogic;
+
+	private boolean paused;
 
 	public Wagoneer(final FileHandleResolver resolver) {
 		resourceService = new ResourceService(resolver);

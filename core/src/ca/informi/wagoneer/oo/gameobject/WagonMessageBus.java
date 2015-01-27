@@ -1,7 +1,6 @@
 package ca.informi.wagoneer.oo.gameobject;
 
 import ca.informi.gdx.delegate.IntervalTimer.Interval;
-import ca.informi.wagoneer.oo.gameobject.WagonConnections.WagonConnection;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -16,14 +15,17 @@ public class WagonMessageBus implements Updatable, Disposable {
 		this.owner = owner;
 	}
 
-	public void add(final WagonMessage message) {
-		bus.add(message);
-	}
-
 	@Override
 	public void dispose() {
 		WagonMessage.releaseAll(bus);
 		bus.clear();
+	}
+
+	public void receive(final WagonMessage message) {
+		if (message.receive(this.owner)) {
+			owner.delegates.handle(message);
+			bus.add(message);
+		}
 	}
 
 	@Override
@@ -32,12 +34,18 @@ public class WagonMessageBus implements Updatable, Disposable {
 		while (busClock > busClockInterval) {
 			owner.busWillUpdate();
 			busClock -= busClockInterval;
-			for (final WagonConnection wc : owner.connections.connections) {
-				if (wc.wagon == null) continue;
-				for (final WagonMessage message : bus) {
-					wc.wagon.receiveMessage(message.clone(wc.offsetX, wc.offsetY));
+			for (int i = 0, n = bus.size; i < n; ++i) {
+				final WagonMessage message = bus.get(i);
+				for (final WagonHitch wh : owner.hitches) {
+					if (!wh.isConnected()) {
+						continue;
+					}
+					wh.connected.owner.messageBus.receive(WagonMessage.obtain(message, wh.offsetX, wh.offsetY));
 				}
+				bus.set(i, null);
+				message.release();
 			}
+			bus.clear();
 		}
 	}
 
